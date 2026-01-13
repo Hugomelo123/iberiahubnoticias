@@ -2,7 +2,7 @@ import { Layout } from '@/components/editorial/Layout';
 import { stories } from '@/lib/mockData';
 import { useRoute, Link } from 'wouter';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Share2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, User } from 'lucide-react';
 import NotFound from './not-found';
 
 export default function Article() {
@@ -13,13 +13,23 @@ export default function Article() {
 
   return (
     <Layout>
-      <div className="mb-8">
+      <div className="mb-8 flex justify-between items-center">
         <Link href="/noticias">
           <a className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors text-sm font-medium group">
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Voltar à edição
           </a>
         </Link>
+        
+        <div className="flex items-center gap-3 text-right">
+          <div>
+            <p className="text-xs font-bold text-white leading-none mb-1">{story.author.name}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{story.author.role}</p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+            <User className="w-4 h-4 text-primary" />
+          </div>
+        </div>
       </div>
 
       <motion.article 

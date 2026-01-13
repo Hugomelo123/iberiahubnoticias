@@ -12,6 +12,11 @@ export interface Story {
   timestamp: Date; // For sorting
   type: 'match' | 'transfer' | 'news' | 'interview';
   image?: string;
+  author: {
+    name: string;
+    role: string;
+    avatar?: string;
+  };
   content?: {
     block1: string; // What happened detailed
     block2: string; // Why it matters detailed
@@ -47,6 +52,10 @@ export const stories: Story[] = [
     timestamp: new Date(),
     type: 'match',
     image: heroImage,
+    author: {
+      name: "Ricardo 'vts' Moreira",
+      role: "Editor-Chefe",
+    },
     content: {
       block1: "Numa série controlada do início ao fim, a SAW superou os fantasmas do passado. Com um 13-5 em Vertigo e 13-10 em Ancient, a equipa liderada por MUTiRiS não deu hipóteses à histórica organização Fnatic. Ewjerkz foi o destaque estatístico, mas a coesão tática foi o verdadeiro diferencial.",
       block2: "Este resultado valida anos de investimento no cenário ibérico e quebra a 'maldição' dos RMRs anteriores. Portugal entra finalmente no mapa principal do CS2, abrindo portas para maior visibilidade, investimento e inspiração para a nova geração de jogadores nacionais.",
@@ -67,6 +76,10 @@ export const stories: Story[] = [
     timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
     type: 'transfer',
     image: teamImage,
+    author: {
+      name: "Gonçalo 'Pizituh' Pinto",
+      role: "Repórter",
+    },
     content: {
       block1: "Após meses de especulação, a organização espanhola confirmou a contratação. Stadodo chega para ocupar a vaga deixada em aberto, trazendo experiência e consistência à equipa que procura recuperar o estatuto na região.",
       block2: "O movimento consolida a mistura de talentos portugueses e espanhóis na scene, provando que a 'Iberian Superteam' continua a ser um conceito viável e competitivo.",
@@ -86,6 +99,10 @@ export const stories: Story[] = [
     time: "Ontem",
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
     type: 'match',
+    author: {
+      name: "Redação IberiaHub",
+      role: "Equipa Editorial",
+    },
     content: {
       block1: "Contra todas as expectativas, a Astralis apresentou um T-side avassalador em Overpass. A Vitality, atual número 1 do mundo, pareceu lenta a reagir às adaptações táticas dos dinamarqueses.",
       block2: "A performance de dev1ce como capitão calou os críticos, mostrando que consegue manter o nível de fragging enquanto lidera. O grupo A fica agora totalmente em aberto.",
@@ -105,6 +122,10 @@ export const stories: Story[] = [
     time: "Ontem",
     timestamp: new Date(Date.now() - 25 * 60 * 60 * 1000),
     type: 'news',
+    author: {
+      name: "Redação IberiaHub",
+      role: "Equipa Editorial",
+    },
     content: {
       block1: "A atualização desta noite trouxe ajustes solicitados há muito pelos pros. O loss bonus agora reseta de forma diferente, permitindo mais buy rounds, e a Zeus x27 voltou a ter cooldown reduzido.",
       block2: "Estas mudanças prometem reduzir os 'eco rounds' aborrecidos e aumentar a frequência de gun rounds, tornando as partidas mais dinâmicas para os espectadores.",

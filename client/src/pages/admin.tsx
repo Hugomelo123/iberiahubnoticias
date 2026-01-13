@@ -1,7 +1,7 @@
 import { Layout } from '@/components/editorial/Layout';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2 } from 'lucide-react';
+import { Save, Plus, Trash2, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User } from 'lucide-react';
 import { stories as initialStories } from '@/lib/mockData';
 
 export default function EditorPanel() {
@@ -30,7 +30,7 @@ export default function EditorPanel() {
           </h1>
         </div>
         
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-2">Conteúdo</div>
           {stories.map(s => (
             <button 
@@ -84,32 +84,49 @@ export default function EditorPanel() {
             </section>
 
             {/* Meta Grid */}
-            <div className="grid md:grid-cols-3 gap-6">
-              <section className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Entidade Relacionada</label>
+            <div className="grid md:grid-cols-4 gap-6">
+              <section className="space-y-2 md:col-span-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Autor</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input 
+                    type="text" 
+                    value={activeStory.author.name}
+                    onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, name: e.target.value}})}
+                    className="w-full bg-white/5 border border-white/10 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:border-primary/50"
+                  />
+                </div>
+              </section>
+              <section className="space-y-2 md:col-span-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Cargo</label>
                 <input 
                   type="text" 
-                  value={activeStory.entity}
+                  value={activeStory.author.role}
+                  onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, role: e.target.value}})}
                   className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50"
                 />
               </section>
               <section className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Tipo de Conteúdo</label>
-                <select className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50 appearance-none">
-                  <option>Match</option>
-                  <option>Transfer</option>
-                  <option>News</option>
-                  <option>Interview</option>
-                </select>
-              </section>
-              <section className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Slug URL</label>
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Entidade</label>
                 <input 
                   type="text" 
-                  value={activeStory.slug}
-                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm font-mono opacity-60"
-                  readOnly
+                  value={activeStory.entity}
+                  onChange={(e) => setActiveStory({...activeStory, entity: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50"
                 />
+              </section>
+              <section className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Tipo</label>
+                <select 
+                  value={activeStory.type}
+                  onChange={(e) => setActiveStory({...activeStory, type: e.target.value as any})}
+                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50 appearance-none text-slate-300"
+                >
+                  <option value="match">Match</option>
+                  <option value="transfer">Transfer</option>
+                  <option value="news">News</option>
+                  <option value="interview">Interview</option>
+                </select>
               </section>
             </div>
 
@@ -122,6 +139,13 @@ export default function EditorPanel() {
                 </label>
                 <textarea 
                   value={activeStory.content?.block1 || activeStory.whatHappened}
+                  onChange={(e) => {
+                    if (activeStory.content) {
+                      setActiveStory({...activeStory, content: {...activeStory.content, block1: e.target.value}});
+                    } else {
+                      setActiveStory({...activeStory, whatHappened: e.target.value});
+                    }
+                  }}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg leading-relaxed text-slate-300 focus:outline-none focus:border-primary/50 min-h-[150px]"
                 />
               </div>
@@ -130,6 +154,13 @@ export default function EditorPanel() {
                 <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Porque importa</label>
                 <textarea 
                   value={activeStory.content?.block2 || activeStory.whyItMatters}
+                  onChange={(e) => {
+                    if (activeStory.content) {
+                      setActiveStory({...activeStory, content: {...activeStory.content, block2: e.target.value}});
+                    } else {
+                      setActiveStory({...activeStory, whyItMatters: e.target.value});
+                    }
+                  }}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-primary/50 min-h-[100px]"
                 />
               </div>
