@@ -28,9 +28,16 @@ export function HeroStory({ story }: HeroStoryProps) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60" />
           
-          <div className="absolute bottom-4 left-4 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-white/80">
-            <span className="bg-primary px-2 py-0.5 rounded text-white">{story.entity}</span>
-            <span>{story.time}</span>
+          <div className="absolute bottom-4 left-4 flex items-center gap-4 text-xs font-medium uppercase tracking-wider text-white/80">
+            <div className="flex items-center gap-2">
+              <span className="bg-primary px-2 py-0.5 rounded text-white">{story.entity}</span>
+              <span>{story.time}</span>
+            </div>
+            <div className="h-4 w-px bg-white/20 hidden md:block" />
+            <div className="hidden md:flex items-center gap-2">
+              <span className="text-white/60 lowercase italic">por</span>
+              <span className="text-white font-bold">{story.author.name}</span>
+            </div>
           </div>
         </div>
 

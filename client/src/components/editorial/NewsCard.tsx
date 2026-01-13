@@ -23,6 +23,7 @@ export function NewsCard({ story }: NewsCardProps) {
             {story.type}
           </span>
           <span className="text-xs text-muted-foreground font-mono">{story.time}</span>
+          <span className="text-white/30 text-[10px] uppercase font-bold ml-2">por {story.author.name}</span>
           <span className="text-xs text-muted-foreground ml-auto group-hover:text-primary transition-colors">
             {story.entity}
           </span>
