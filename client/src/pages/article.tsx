@@ -23,8 +23,9 @@ export default function Article() {
       </div>
 
       <motion.article 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
         className="max-w-2xl mx-auto"
       >
         {/* Header */}

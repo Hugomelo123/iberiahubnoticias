@@ -11,8 +11,12 @@ export function NewsCard({ story }: NewsCardProps) {
   return (
     <Link href={`/noticias/${story.slug}`}>
       <motion.div 
-        whileHover={{ y: -2 }}
-        className="group cursor-pointer p-5 rounded-lg hover:bg-card/40 transition-colors border border-transparent hover:border-border/40"
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        whileHover={{ y: -4, backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+        whileTap={{ scale: 0.98 }}
+        className="group cursor-pointer p-5 rounded-xl transition-all duration-300 border border-transparent hover:border-white/5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
       >
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80 bg-primary/10 px-1.5 py-0.5 rounded">
@@ -26,16 +30,21 @@ export function NewsCard({ story }: NewsCardProps) {
 
         <h3 className="font-serif text-xl font-medium mb-3 text-foreground group-hover:text-white transition-colors flex items-start justify-between">
           {story.title}
-          <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-50 transition-opacity" />
+          <motion.div
+            initial={{ opacity: 0, x: -5 }}
+            whileHover={{ opacity: 1, x: 0 }}
+          >
+            <ArrowUpRight className="w-4 h-4 text-primary" />
+          </motion.div>
         </h3>
 
         <div className="space-y-1.5">
-          <p className="text-sm text-muted-foreground/90">
+          <p className="text-sm text-muted-foreground/90 leading-relaxed">
             <span className="text-foreground/50 text-xs uppercase mr-2 font-bold tracking-wider">O que:</span>
             {story.whatHappened}
           </p>
-          <p className="text-sm text-muted-foreground/60">
-            <span className="text-foreground/30 text-xs uppercase mr-2 font-bold tracking-wider">Impacto:</span>
+          <p className="text-sm text-muted-foreground/60 leading-relaxed italic">
+            <span className="text-foreground/30 text-xs uppercase mr-2 font-bold tracking-wider not-italic">Impacto:</span>
             {story.whyItMatters}
           </p>
         </div>
