@@ -7,13 +7,24 @@ import NotFound from "@/pages/not-found";
 import Noticias from "@/pages/noticias";
 import Article from "@/pages/article";
 import Admin from "@/pages/admin";
+import Login from "@/pages/login";
+
+function PrivateRoute({ component: Component, ...rest }: any) {
+  const isAuth = sessionStorage.getItem('isEditor') === 'true';
+  return (
+    <Route {...rest}>
+      {isAuth ? <Component /> : <Redirect to="/login" />}
+    </Route>
+  );
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/noticias" component={Noticias} />
       <Route path="/noticias/:slug" component={Article} />
-      <Route path="/admin" component={Admin} />
+      <Route path="/login" component={Login} />
+      <PrivateRoute path="/admin" component={Admin} />
       <Route path="/">
         <Redirect to="/noticias" />
       </Route>
