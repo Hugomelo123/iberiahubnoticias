@@ -47,8 +47,16 @@ export default function Noticias() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-2xl"
           >
-            <h1 className="font-serif text-6xl md:text-8xl font-bold tracking-tighter leading-none mb-6">
-              IberiaHub <span className="text-primary italic font-normal">Journal</span>
+            <h1 className="font-serif text-6xl md:text-8xl font-bold tracking-tighter leading-none mb-6 group">
+              IberiaHub <span className="text-primary italic font-light block md:inline-block relative">
+                Notícias
+                <motion.span 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: '100%' }}
+                  transition={{ delay: 1, duration: 1 }}
+                  className="absolute -bottom-2 left-0 h-1 bg-primary/20 rounded-full"
+                />
+              </span>
             </h1>
             <p className="text-white/40 text-xl font-light leading-relaxed border-l border-primary/30 pl-6">
               A curadoria definitiva do Counter-Strike ibérico. <br/>
