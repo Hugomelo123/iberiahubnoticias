@@ -42,20 +42,32 @@ export default function Noticias() {
       </header>
 
       {/* ACT 1: Highlight */}
-      <section>
+      <section className="mb-20">
         <HeroStory story={mainStory} />
       </section>
 
-      {/* ACT 2: Briefing */}
-      <section>
-        <BriefingBlock items={briefingItems} />
-      </section>
+      <div className="grid lg:grid-cols-3 gap-12 items-start">
+        {/* ACT 3: Feed - Occupies 2/3 on Desktop */}
+        <section className="lg:col-span-2 order-2 lg:order-1">
+          <FeedGroup label="Hoje" stories={todayStories} />
+          <FeedGroup label="Ontem" stories={yesterdayStories} />
+        </section>
 
-      {/* ACT 3: Feed */}
-      <section>
-        <FeedGroup label="Hoje" stories={todayStories} />
-        <FeedGroup label="Ontem" stories={yesterdayStories} />
-      </section>
+        {/* ACT 2: Briefing - Becomes a Sidebar on Desktop */}
+        <section className="lg:col-span-1 order-1 lg:order-2 lg:sticky lg:top-24">
+          <BriefingBlock items={briefingItems} />
+          
+          <div className="hidden lg:block p-6 rounded-lg bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+            <h4 className="font-serif text-lg mb-2 italic">IberiaHub Insider</h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Recebe a edição diretamente no teu terminal. A curadoria que define o meta português.
+            </p>
+            <button className="mt-4 w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-xs font-mono transition-colors">
+              SUBSCREVER_FEED
+            </button>
+          </div>
+        </section>
+      </div>
       
       <footer className="mt-20 pt-10 border-t border-border text-center text-muted-foreground text-sm font-mono">
         <p>IberiaHub Notícias © 2026</p>
