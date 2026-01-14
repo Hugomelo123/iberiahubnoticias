@@ -22,16 +22,15 @@ export default function Article() {
         style={{ scaleX: scrollYProgress }}
       />
 
-      <div className="mb-12 flex justify-between items-center relative z-10">
-        <Link href="/noticias">
-          <motion.a 
-            whileHover={{ x: -5 }}
-            className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar ao Journal
-          </motion.a>
-        </Link>
+      <div className="pt-32 px-8">
+        <div className="mb-12 flex justify-between items-center relative z-10">
+          <Link href="/noticias">
+            <a className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar ao Journal
+            </a>
+          </Link>
+        </div>
         
         <div className="flex items-center gap-4 group">
           <div className="text-right">
