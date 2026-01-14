@@ -42,27 +42,39 @@ export function HeroStory({ story }: HeroStoryProps) {
             </div>
           </div>
 
-          <div className="lg:col-span-5 space-y-4">
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="lg:col-span-5 space-y-4"
+          >
             <h2 className="font-serif text-3xl md:text-5xl font-semibold leading-tight text-white group-hover:text-primary/90 transition-colors">
               {story.title}
             </h2>
             
             <div className="space-y-4 text-muted-foreground">
               <div className="space-y-3">
-                <p className="text-lg md:text-xl text-foreground/90 font-medium leading-relaxed">
+                <motion.p 
+                  initial={{ opacity: 0.8 }}
+                  whileHover={{ opacity: 1 }}
+                  className="text-lg md:text-xl text-foreground/90 font-medium leading-relaxed"
+                >
                   <span className="text-primary/70 mr-2">●</span>
                   {story.whatHappened}
-                </p>
-                <p className="text-sm md:text-base font-mono text-muted-foreground border-l-2 border-primary/20 pl-4 py-1 leading-relaxed">
+                </motion.p>
+                <p className="text-sm md:text-base font-mono text-muted-foreground border-l-2 border-primary/20 pl-4 py-1 leading-relaxed italic">
                   {story.whyItMatters}
                 </p>
               </div>
               
-              <div className="flex items-center text-primary text-sm font-medium opacity-80 group-hover:opacity-100 transition-all transform group-hover:translate-x-2">
-                Ler estória completa <ArrowRight className="ml-2 w-4 h-4" />
+              <div className="flex items-center text-primary text-sm font-medium opacity-80 group-hover:opacity-100 transition-all transform group-hover:translate-x-3">
+                <span className="relative overflow-hidden group/link px-1">
+                  Ler estória completa
+                  <span className="absolute bottom-0 left-0 w-full h-px bg-primary transform translate-x-[-100%] group-hover/link:translate-x-0 transition-transform duration-300" />
+                </span>
+                <ArrowRight className="ml-2 w-4 h-4 animate-pulse" />
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </Link>

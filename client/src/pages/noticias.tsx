@@ -22,14 +22,20 @@ export default function Noticias() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight mb-2">
-            IberiaHub <span className="italic text-primary font-normal">Notícias</span>
+          <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight mb-2 group">
+            IberiaHub <span className="italic text-primary font-normal inline-block group-hover:rotate-[-2deg] transition-transform duration-500">Notícias</span>
           </h1>
-          <p className="text-muted-foreground text-lg font-light">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1 }}
+            className="text-muted-foreground text-lg font-light flex items-center gap-2"
+          >
+            <span className="w-8 h-px bg-primary/30" />
             A edição de hoje no CS português.
-          </p>
+          </motion.p>
         </motion.div>
         <Link href="/admin">
           <motion.a 

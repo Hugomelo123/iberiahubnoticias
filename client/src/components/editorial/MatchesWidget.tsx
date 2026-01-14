@@ -83,40 +83,58 @@ function MatchCard({ match, isLarge = false }: { match: MatchLive, isLarge?: boo
       href={match.link}
       target="_blank"
       rel="noopener noreferrer"
-      whileHover={{ y: -4, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-      className={`block p-4 rounded-xl bg-card/30 border border-white/5 hover:border-primary/20 transition-all group ${isLarge ? 'p-6' : ''}`}
+      whileHover={{ 
+        y: -6, 
+        backgroundColor: "rgba(255, 255, 255, 0.06)",
+        boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+      }}
+      whileTap={{ scale: 0.97 }}
+      className={`block p-4 rounded-xl bg-card/20 border border-white/5 hover:border-primary/30 transition-all group overflow-hidden relative ${isLarge ? 'p-6' : ''}`}
     >
-      <div className="flex justify-between items-start mb-3">
-        <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+      {/* Hover Background Accent */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
+
+      <div className="flex justify-between items-start mb-3 relative z-10">
+        <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
           {match.competition}
         </span>
         {match.isLive && (
-          <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20">
+          <motion.span 
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest">Live Now</span>
-          </span>
+          </motion.span>
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <div className={`flex-1 font-bold text-white tracking-tight ${isLarge ? 'text-2xl' : 'text-base'}`}>
-          {match.teamA} <span className="text-primary/40 mx-1 font-serif italic text-lg">vs</span> {match.teamB}
+      <div className="flex items-center justify-between gap-4 mb-4 relative z-10">
+        <div className={`flex-1 font-bold text-white tracking-tighter ${isLarge ? 'text-3xl' : 'text-lg'}`}>
+          {match.teamA} <span className="text-primary/40 mx-1 font-serif italic text-lg lg:text-xl font-normal">vs</span> {match.teamB}
         </div>
-        <div className="text-xs font-mono text-muted-foreground bg-white/5 px-2 py-1 rounded">
-          {match.isLive ? 'Em Direto' : match.time}
+        <div className="text-[10px] font-mono text-muted-foreground border border-white/10 px-2 py-1 rounded-sm uppercase tracking-tighter">
+          {match.isLive ? 'Direto' : match.time}
         </div>
       </div>
 
       {match.caster && (
-        <div className="flex items-center gap-3 pt-3 border-t border-white/5">
-          <div className="p-1.5 rounded bg-primary/10">
+        <div className="flex items-center gap-3 pt-3 border-t border-white/5 relative z-10">
+          <div className="p-1.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
             <Mic2 className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter leading-none mb-1">Caster em Estúdio</span>
-            <span className="text-sm text-white/90 font-medium leading-none">{match.caster}</span>
+            <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-none mb-1 opacity-60">On-Air</span>
+            <span className="text-sm text-white font-semibold leading-none group-hover:text-primary transition-colors">{match.caster}</span>
           </div>
-          <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-40 transition-opacity" />
+          <motion.div
+            animate={{ x: [0, 4, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+          </motion.div>
         </div>
       )}
     </motion.a>
