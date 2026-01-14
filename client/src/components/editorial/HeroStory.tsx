@@ -10,12 +10,7 @@ interface HeroStoryProps {
 export function HeroStory({ story }: HeroStoryProps) {
   return (
     <Link href={`/noticias/${story.slug}`}>
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="group cursor-pointer relative mb-24"
-      >
+      <div className="group cursor-pointer relative mb-24">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           <div className="lg:col-span-7 relative">
             <motion.div 
@@ -86,7 +81,7 @@ export function HeroStory({ story }: HeroStoryProps) {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

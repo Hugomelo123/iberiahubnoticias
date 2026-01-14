@@ -25,7 +25,7 @@ export default function Article() {
       <div className="pt-32 px-8">
         <div className="mb-12 flex justify-between items-center relative z-10">
           <Link href="/noticias">
-            <a className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer">
+             <a className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar ao Journal
             </a>

@@ -20,7 +20,7 @@ export default function Noticias() {
       <nav className="fixed top-0 left-0 right-0 h-20 border-b border-white/5 bg-background/50 backdrop-blur-2xl z-[100] px-8 flex items-center justify-between">
         <div className="flex items-center gap-8">
            <Link href="/noticias">
-             <a className="font-serif text-2xl font-bold tracking-tighter hover:text-primary transition-colors cursor-pointer">IH.</a>
+             <span className="font-serif text-2xl font-bold tracking-tighter hover:text-primary transition-colors cursor-pointer text-white">IH.</span>
            </Link>
         </div>
         

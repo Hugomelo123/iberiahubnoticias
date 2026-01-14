@@ -10,14 +10,7 @@ interface NewsCardProps {
 export function NewsCard({ story }: NewsCardProps) {
   return (
     <Link href={`/noticias/${story.slug}`}>
-      <motion.div 
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        whileHover={{ y: -4, backgroundColor: "rgba(255, 255, 255, 0.03)" }}
-        whileTap={{ scale: 0.98 }}
-        className="group cursor-pointer p-5 rounded-xl transition-all duration-300 border border-transparent hover:border-white/5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
-      >
+      <div className="group cursor-pointer p-5 rounded-xl transition-all duration-300 border border-transparent hover:border-white/5 hover:bg-white/5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80 bg-primary/10 px-1.5 py-0.5 rounded">
             {story.type}
@@ -49,7 +42,7 @@ export function NewsCard({ story }: NewsCardProps) {
             {story.whyItMatters}
           </p>
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }
