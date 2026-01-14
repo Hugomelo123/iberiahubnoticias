@@ -2,7 +2,8 @@ import { Layout } from '@/components/editorial/Layout';
 import { HeroStory } from '@/components/editorial/HeroStory';
 import { BriefingBlock } from '@/components/editorial/BriefingBlock';
 import { FeedGroup } from '@/components/editorial/FeedGroup';
-import { stories, briefingItems } from '@/lib/mockData';
+import { MatchesWidget } from '@/components/editorial/MatchesWidget';
+import { stories, briefingItems, liveMatches } from '@/lib/mockData';
 import { Link } from 'wouter';
 import { LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -55,6 +56,7 @@ export default function Noticias() {
 
         {/* ACT 2: Briefing - Becomes a Sidebar on Desktop */}
         <section className="lg:col-span-1 order-1 lg:order-2 lg:sticky lg:top-24">
+          <MatchesWidget matches={liveMatches} />
           <BriefingBlock items={briefingItems} />
           
           <div className="hidden lg:block p-6 rounded-lg bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">

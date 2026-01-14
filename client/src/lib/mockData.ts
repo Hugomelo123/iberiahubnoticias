@@ -33,6 +33,40 @@ export interface BriefingItem {
   time: string;
 }
 
+export interface MatchLive {
+  id: string;
+  teamA: string;
+  teamB: string;
+  competition: string;
+  time: string;
+  isLive: boolean;
+  caster?: string;
+  link: string;
+}
+
+export const liveMatches: MatchLive[] = [
+  { 
+    id: 'm1', 
+    teamA: 'SAW', 
+    teamB: 'G2', 
+    competition: 'PGL Major Copenhaga', 
+    time: '20:00', 
+    isLive: true, 
+    caster: 'Zorlak', 
+    link: 'https://twitch.tv/zorlakoka' 
+  },
+  { 
+    id: 'm2', 
+    teamA: 'Movistar KOI', 
+    teamB: 'Astralis', 
+    competition: 'RMR Europeu', 
+    time: '22:30', 
+    isLive: false, 
+    caster: 'Archarom', 
+    link: 'https://twitch.tv/rtparena' 
+  }
+];
+
 export const briefingItems: BriefingItem[] = [
   { id: '1', text: "SAW anuncia saída de arki após 2 anos de liderança técnica.", time: "10:30" },
   { id: '2', text: "RMR Europeu: Datas confirmadas para Bucareste.", time: "09:15" },
