@@ -22,11 +22,6 @@ export default function Noticias() {
            <Link href="/noticias">
              <a className="font-serif text-2xl font-bold tracking-tighter hover:text-primary transition-colors">IH.</a>
            </Link>
-           <div className="hidden md:flex items-center gap-6 text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">
-              <a href="#" className="hover:text-primary transition-colors">Mercado</a>
-              <a href="#" className="hover:text-primary transition-colors">Competição</a>
-              <a href="#" className="hover:text-primary transition-colors">Radar</a>
-           </div>
         </div>
         
         <div className="flex items-center gap-4">
