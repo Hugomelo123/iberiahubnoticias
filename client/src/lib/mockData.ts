@@ -64,6 +64,26 @@ export const liveMatches: MatchLive[] = [
     isLive: false, 
     caster: 'Archarom', 
     link: 'https://twitch.tv/rtparena' 
+  },
+  { 
+    id: 'm3', 
+    teamA: 'Rhyno', 
+    teamB: 'FTW', 
+    competition: 'LPCS Spring', 
+    time: '18:00', 
+    isLive: false, 
+    caster: 'Moreira', 
+    link: 'https://twitch.tv/rtparena' 
+  },
+  { 
+    id: 'm4', 
+    teamA: 'Eternal Fire', 
+    teamB: 'Vitality', 
+    competition: 'ESL Pro League', 
+    time: '15:00', 
+    isLive: false, 
+    caster: 'Shootsgud', 
+    link: 'https://twitch.tv/esl_csgo' 
   }
 ];
 
