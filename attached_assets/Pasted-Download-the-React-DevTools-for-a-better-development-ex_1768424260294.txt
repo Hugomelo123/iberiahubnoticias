@@ -1,0 +1,45 @@
+Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+react-dom_client.js?v=fea5ba19:2156 In HTML, <a> cannot be a descendant of <a>.
+This will cause a hydration error.
+
+  ...
+    <TooltipProvider data-replit-metadata="client/src..." data-component-name="TooltipPro...">
+      <TooltipProviderProvider scope={undefined} isOpenDelayedRef={{current:true}} delayDuration={700} onOpen={function} ...>
+        <Toaster>
+        <Router data-replit-metadata="client/src..." data-component-name="Router">
+          <Switch data-replit-metadata="client/src..." data-component-name="Switch">
+            <Route data-replit-metadata="client/src..." data-component-name="Route" path="/noticias" ...>
+              <Noticias params={{}}>
+                <Layout data-replit-metadata="client/src..." data-component-name="Layout">
+                  <div data-replit-metadata="client/src..." data-component-name="div" className="min-h-scre...">
+                    <div>
+                    <div>
+                    <div>
+                    <div data-replit-metadata="client/src..." data-component-name="div" className="max-w-6xl ...">
+                      <nav data-replit-metadata="client/src..." data-component-name="nav" className="fixed top-...">
+                        <div>
+                        <div data-replit-metadata="client/src..." data-component-name="div" className="flex items...">
+                          <button>
+>                         <a
+>                           data-replit-metadata="client/src/pages/noticias.tsx:31:11"
+>                           data-component-name="Link"
+>                           onClick={function}
+>                           href="/admin"
+>                           className={undefined}
+>                           ref={null}
+>                         >
+                            <motion.a data-replit-metadata="client/src..." data-component-name="motion.a" ...>
+>                             <a
+>                               data-replit-metadata="client/src/pages/noticias.tsx:32:12"
+>                               data-component-name="motion.a"
+>                               className="p-2 rounded-full bg-primary/10 text-primary border border-primary/20 transi..."
+>                               style={{}}
+>                               ref={function}
+>                             >
+                      ...
+
+validateDOMNesting @ react-dom_client.js?v=fea5ba19:2156Understand this error
+react-dom_client.js?v=fea5ba19:2163 <a> cannot contain a nested <a>.
+See this log for the ancestor stack trace.
+(anonymous) @ react-dom_client.js?v=fea5ba19:2163Understand this error
+2/noticias:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received

@@ -29,12 +29,12 @@ export default function Noticias() {
               <Bell className="w-5 h-5" />
            </button>
            <Link href="/admin">
-            <motion.a 
+            <motion.span 
               whileHover={{ scale: 1.1, rotate: 90 }}
-              className="p-2 rounded-full bg-primary/10 text-primary border border-primary/20 transition-all cursor-pointer"
+              className="p-2 rounded-full bg-primary/10 text-primary border border-primary/20 transition-all cursor-pointer inline-flex items-center justify-center"
             >
               <LayoutDashboard className="w-5 h-5" />
-            </motion.a>
+            </motion.span>
           </Link>
         </div>
       </nav>

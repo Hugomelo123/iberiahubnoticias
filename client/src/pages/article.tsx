@@ -25,10 +25,10 @@ export default function Article() {
       <div className="pt-32 px-8">
         <div className="mb-12 flex justify-between items-center relative z-10">
           <Link href="/noticias">
-             <a className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer">
+             <span className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar ao Journal
-            </a>
+            </span>
           </Link>
         </div>
         
@@ -43,10 +43,7 @@ export default function Article() {
         </div>
       </div>
 
-      <motion.article 
-        style={{ opacity, scale }}
-        className="max-w-4xl mx-auto mb-20"
-      >
+      <article className="max-w-4xl mx-auto mb-20">
         <header className="mb-16">
           <div className="flex items-center gap-4 mb-8 text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
             <span className="px-2 py-0.5 rounded border border-primary/30 bg-primary/5">{story.type}</span>
@@ -128,7 +125,7 @@ export default function Article() {
             </div>
           </aside>
         </div>
-      </motion.article>
+      </article>
     </Layout>
   );
 }
