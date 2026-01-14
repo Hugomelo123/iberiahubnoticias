@@ -1,119 +1,133 @@
 import { Layout } from '@/components/editorial/Layout';
 import { stories } from '@/lib/mockData';
 import { useRoute, Link } from 'wouter';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Share2, Bookmark, User } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowLeft, Share2, Bookmark, User, Clock, ChevronRight } from 'lucide-react';
 import NotFound from './not-found';
 
 export default function Article() {
   const [match, params] = useRoute('/noticias/:slug');
   const story = stories.find(s => s.slug === params?.slug);
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
   if (!story) return <NotFound />;
 
   return (
     <Layout>
-      <div className="mb-8 flex justify-between items-center">
+      {/* Progress Bar */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[110] origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+
+      <div className="mb-12 flex justify-between items-center relative z-10">
         <Link href="/noticias">
-          <a className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors text-sm font-medium group">
-            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Voltar à edição
-          </a>
+          <motion.a 
+            whileHover={{ x: -5 }}
+            className="inline-flex items-center text-white/40 hover:text-primary transition-colors text-xs font-mono uppercase tracking-[0.2em] group cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Voltar ao Journal
+          </motion.a>
         </Link>
         
-        <div className="flex items-center gap-3 text-right">
-          <div>
-            <p className="text-xs font-bold text-white leading-none mb-1">{story.author.name}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{story.author.role}</p>
+        <div className="flex items-center gap-4 group">
+          <div className="text-right">
+            <p className="text-[10px] font-black text-white uppercase tracking-widest leading-none mb-1 group-hover:text-primary transition-colors">{story.author.name}</p>
+            <p className="text-[9px] text-white/30 uppercase tracking-tighter font-mono">{story.author.role}</p>
           </div>
-          <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-            <User className="w-4 h-4 text-primary" />
+          <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-primary/50 transition-colors">
+            <User className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
           </div>
         </div>
       </div>
 
       <motion.article 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto"
+        style={{ opacity, scale }}
+        className="max-w-4xl mx-auto mb-20"
       >
-        {/* Header */}
-        <header className="mb-12 text-center">
-          <div className="flex justify-center items-center gap-3 mb-6 text-sm font-mono text-primary/80 uppercase tracking-widest">
-            <span>{story.type}</span>
-            <span className="w-1 h-1 bg-current rounded-full" />
-            <span>{story.time}</span>
-            <span className="w-1 h-1 bg-current rounded-full" />
-            <span>{story.entity}</span>
+        <header className="mb-16">
+          <div className="flex items-center gap-4 mb-8 text-[10px] font-mono text-primary uppercase tracking-[0.3em]">
+            <span className="px-2 py-0.5 rounded border border-primary/30 bg-primary/5">{story.type}</span>
+            <div className="flex items-center gap-2 text-white/30">
+              <Clock className="w-3 h-3" />
+              {story.time}
+            </div>
           </div>
           
-          <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight mb-6">
+          <h1 className="font-serif text-5xl md:text-7xl font-bold leading-[1.05] text-white mb-8 tracking-tighter">
             {story.title}
           </h1>
 
-          <div className="flex justify-center gap-4">
-             <button className="p-2 rounded-full hover:bg-card text-muted-foreground hover:text-foreground transition-colors">
-               <Share2 className="w-5 h-5" />
-             </button>
-             <button className="p-2 rounded-full hover:bg-card text-muted-foreground hover:text-foreground transition-colors">
-               <Bookmark className="w-5 h-5" />
-             </button>
+          <div className="flex items-center gap-6">
+             <div className="h-px bg-white/10 flex-1" />
+             <div className="flex gap-2">
+                <button className="p-3 rounded-full bg-white/5 border border-white/5 hover:border-primary/30 text-white/40 hover:text-primary transition-all">
+                  <Share2 className="w-4 h-4" />
+                </button>
+                <button className="p-3 rounded-full bg-white/5 border border-white/5 hover:border-primary/30 text-white/40 hover:text-primary transition-all">
+                  <Bookmark className="w-4 h-4" />
+                </button>
+             </div>
           </div>
         </header>
 
         {story.image && (
-          <div className="mb-12 rounded-lg overflow-hidden border border-border/20 shadow-2xl">
-            <img src={story.image} alt={story.title} className="w-full h-auto" />
-            <div className="bg-card/50 p-2 text-center text-xs text-muted-foreground italic">
-              Fotografia de arquivo / Ilustração
-            </div>
-          </div>
+          <motion.div 
+            initial={{ y: 40, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            className="mb-20 rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.5)] relative group"
+          >
+            <img src={story.image} alt={story.title} className="w-full h-auto grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+          </motion.div>
         )}
 
-        {/* Content Blocks */}
-        <div className="space-y-12 relative">
-          {/* Vertical Line */}
-          <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-border to-transparent hidden md:block -ml-8 opacity-30" />
-
-          {/* Block 1: O Que Aconteceu */}
-          <section>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-4">
-              O que aconteceu
-            </h3>
-            <p className="text-xl md:text-2xl leading-relaxed text-foreground/90 font-serif">
-              {story.content?.block1 || story.whatHappened}
-            </p>
-          </section>
-
-          <div className="h-px bg-border/40 w-1/2 mx-auto" />
-
-          {/* Block 2: Porque Importa */}
-          <section>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-primary/80 mb-4">
-              Porque importa
-            </h3>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              {story.content?.block2 || story.whyItMatters}
-            </p>
-          </section>
-
-          {/* Block 3: Ligação */}
-          {story.content?.hubLink && (
-            <section className="bg-card border border-border rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-mono uppercase text-muted-foreground block mb-1">
-                  Explorar no Hub
-                </span>
-                <span className="font-medium text-foreground">
-                  Mais sobre {story.entity}
-                </span>
-              </div>
-              <button className="bg-primary text-primary-foreground px-6 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity whitespace-nowrap">
-                {story.content.hubLink.text}
-              </button>
+        <div className="grid lg:grid-cols-12 gap-12 relative">
+          <div className="lg:col-span-8 space-y-16">
+            <section className="relative">
+              <div className="absolute -left-8 top-0 text-primary/20 font-serif text-6xl select-none leading-none">“</div>
+              <p className="text-2xl md:text-3xl leading-relaxed text-white/90 font-serif italic">
+                {story.content?.block1 || story.whatHappened}
+              </p>
             </section>
-          )}
+
+            <div className="h-px bg-gradient-to-r from-primary/20 to-transparent w-full" />
+
+            <section className="space-y-6">
+              <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-primary/60 font-black">
+                Análise IH.
+              </h3>
+              <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light">
+                {story.content?.block2 || story.whyItMatters}
+              </p>
+            </section>
+          </div>
+
+          <aside className="lg:col-span-4 lg:sticky lg:top-32 h-fit space-y-8">
+            {story.content?.hubLink && (
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group"
+              >
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl -mr-12 -mt-12" />
+                <span className="text-[9px] font-mono uppercase text-primary tracking-widest block mb-4">Inside the Hub</span>
+                <h4 className="text-sm font-bold text-white mb-6 uppercase tracking-tight">Mais dados sobre {story.entity}</h4>
+                <button className="w-full flex items-center justify-between group/btn bg-white text-black px-4 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all">
+                  {story.content.hubLink.text}
+                  <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+              </motion.div>
+            )}
+            
+            <div className="p-6 border-l border-white/5 space-y-4 opacity-40 hover:opacity-100 transition-opacity">
+               <p className="text-[9px] font-mono uppercase tracking-[0.3em]">Editoria Protocol V4</p>
+               <p className="text-xs italic leading-relaxed">Este conteúdo foi verificado pela nossa equipa editorial em Lisboa.</p>
+            </div>
+          </aside>
         </div>
       </motion.article>
     </Layout>

@@ -1,14 +1,15 @@
-import { Layout } from '@/components/editorial/Layout';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut } from 'lucide-react';
 import { stories as initialStories } from '@/lib/mockData';
+import { useLocation } from 'wouter';
 
 export default function EditorPanel() {
   const [stories, setStories] = useState(initialStories);
   const [activeStory, setActiveStory] = useState(initialStories[0]);
   const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [, setLocation] = useLocation();
 
   const handleSave = () => {
     setIsSaving(true);
@@ -19,186 +20,243 @@ export default function EditorPanel() {
     }, 800);
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('isEditor');
+    setLocation('/login');
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0a0c] text-slate-200 font-sans flex">
-      {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 bg-[#0f0f12] flex flex-col">
-        <div className="p-6 border-b border-white/5">
-          <h1 className="font-serif text-xl font-bold text-white flex items-center gap-2">
-            <LayoutDashboard className="w-5 h-5 text-primary" />
-            Editor Hub
-          </h1>
+    <div className="min-h-screen bg-[#050507] text-slate-400 font-sans flex overflow-hidden">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.02] z-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+      {/* Modern Sidebar */}
+      <aside className="w-72 border-r border-white/5 bg-[#08080a] flex flex-col relative z-10">
+        <div className="p-8">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(var(--primary),0.3)]">
+              <LayoutDashboard className="w-5 h-5 text-black" />
+            </div>
+            <h1 className="font-serif text-xl font-bold text-white tracking-tighter">
+              IH.<span className="italic text-primary">Editor</span>
+            </h1>
+          </div>
+
+          <nav className="space-y-8">
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-6 px-2">Narrativas</div>
+              <div className="space-y-1">
+                {stories.map(s => (
+                  <button 
+                    key={s.id}
+                    onClick={() => setActiveStory(s)}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 group ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+                  >
+                    <FileText className={`w-4 h-4 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover:text-primary transition-colors'}`} />
+                    <span className="truncate">{s.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-6 px-2">Sistema</div>
+              <div className="space-y-1">
+                <button className="w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-white/40 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                  <History className="w-4 h-4 text-white/20" /> Logs de Edição
+                </button>
+                <button className="w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-white/40 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
+                  <Settings className="w-4 h-4 text-white/20" /> Configurações
+                </button>
+              </div>
+            </div>
+          </nav>
         </div>
         
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-2">Conteúdo</div>
-          {stories.map(s => (
-            <button 
-              key={s.id}
-              onClick={() => setActiveStory(s)}
-              className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-3 ${activeStory.id === s.id ? 'bg-primary/10 text-primary border border-primary/20' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}`}
-            >
-              <FileText className="w-4 h-4 opacity-70" />
-              <span className="truncate">{s.title}</span>
-            </button>
-          ))}
-          <button className="w-full text-left px-3 py-2 rounded-md text-sm text-primary/60 hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-3 mt-4">
-            <Plus className="w-4 h-4" />
-            Nova Edição
+        <div className="mt-auto p-8 border-t border-white/5">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors"
+          >
+            <LogOut className="w-4 h-4" /> Terminar Sessão
           </button>
-        </nav>
-
-        <div className="p-4 border-t border-white/5 text-[10px] text-slate-600 font-mono text-center">
-          SISTEMA V1.0.4 // PT-PT
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <header className="h-16 border-b border-white/5 bg-[#0f0f12]/50 backdrop-blur-md sticky top-0 z-10 px-8 flex items-center justify-between">
-          <div className="text-sm text-slate-400">
-            Editando: <span className="text-white font-medium">{activeStory.title}</span>
+      {/* Main Editing Area */}
+      <main className="flex-1 overflow-y-auto relative z-10 bg-gradient-to-b from-transparent to-[#0a0a0c]/50">
+        <header className="h-24 border-b border-white/5 bg-[#08080a]/50 backdrop-blur-3xl sticky top-0 z-20 px-12 flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/20 block mb-1">Ficheiro Ativo</span>
+            <h2 className="text-white font-serif text-lg italic">{activeStory.title}</h2>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <button className="p-3 rounded-xl bg-white/5 text-white/40 hover:text-white border border-white/5 transition-all">
+              <Eye className="w-5 h-5" />
+            </button>
             <button 
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-primary text-primary-foreground px-4 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="bg-primary text-black px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(var(--primary),0.2)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
             >
-              {isSaving ? 'Guardando...' : <><Save className="w-4 h-4" /> Guardar Alterações</>}
+              {isSaving ? 'Processando...' : 'Publicar Edição'}
             </button>
           </div>
         </header>
 
-        <div className="p-10 max-w-4xl mx-auto">
-          <div className="space-y-8">
-            {/* Title Section */}
-            <section className="space-y-4">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Título da Notícia</label>
+        <div className="p-16 max-w-5xl mx-auto space-y-16 pb-32">
+          {/* Header Edit */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-4 text-white/20">
+               <span className="text-[10px] font-black uppercase tracking-[0.5em]">01</span>
+               <div className="h-px flex-1 bg-white/5" />
+               <span className="text-[10px] font-mono uppercase tracking-widest">Headline & Slug</span>
+            </div>
+            <input 
+              type="text" 
+              value={activeStory.title}
+              onChange={(e) => setActiveStory({...activeStory, title: e.target.value})}
+              className="w-full bg-transparent border-none p-0 text-6xl font-serif font-bold text-white focus:ring-0 placeholder:text-white/10"
+              placeholder="Título da Narrativa..."
+            />
+          </section>
+
+          {/* Meta Edit */}
+          <section className="grid md:grid-cols-4 gap-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Responsável</label>
+              <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
+                <input 
+                  type="text" 
+                  value={activeStory.author.name}
+                  onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, name: e.target.value}})}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Cargo Editorial</label>
               <input 
                 type="text" 
-                value={activeStory.title}
-                onChange={(e) => setActiveStory({...activeStory, title: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-2xl font-serif text-white focus:outline-none focus:border-primary/50 transition-colors"
+                value={activeStory.author.role}
+                onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, role: e.target.value}})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
               />
-            </section>
+            </div>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Entidade Focal</label>
+              <input 
+                type="text" 
+                value={activeStory.entity}
+                onChange={(e) => setActiveStory({...activeStory, entity: e.target.value})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Categorização</label>
+              <select 
+                value={activeStory.type}
+                onChange={(e) => setActiveStory({...activeStory, type: e.target.value as any})}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none appearance-none"
+              >
+                <option value="match">Match Protocol</option>
+                <option value="transfer">Market Analysis</option>
+                <option value="news">Journal Entry</option>
+                <option value="interview">Exclusive</option>
+              </select>
+            </div>
+          </section>
 
-            {/* Meta Grid */}
-            <div className="grid md:grid-cols-4 gap-6">
-              <section className="space-y-2 md:col-span-1">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Autor</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                  <input 
-                    type="text" 
-                    value={activeStory.author.name}
-                    onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, name: e.target.value}})}
-                    className="w-full bg-white/5 border border-white/10 rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:border-primary/50"
+          {/* Body Edit */}
+          <section className="space-y-12">
+            <div className="space-y-6">
+              <div className="flex items-center gap-4 text-white/20">
+                 <span className="text-[10px] font-black uppercase tracking-[0.5em]">02</span>
+                 <div className="h-px flex-1 bg-white/5" />
+                 <span className="text-[10px] font-mono uppercase tracking-widest">Narrative Blocks</span>
+              </div>
+              <div className="grid lg:grid-cols-2 gap-12">
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Bloco 01: O Acontecimento</label>
+                   <textarea 
+                    value={activeStory.content?.block1 || activeStory.whatHappened}
+                    onChange={(e) => {
+                      if (activeStory.content) {
+                        setActiveStory({...activeStory, content: {...activeStory.content, block1: e.target.value}});
+                      } else {
+                        setActiveStory({...activeStory, whatHappened: e.target.value});
+                      }
+                    }}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-6 text-xl font-serif italic text-white/90 focus:border-primary/50 transition-all outline-none min-h-[300px] leading-relaxed"
                   />
                 </div>
-              </section>
-              <section className="space-y-2 md:col-span-1">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Cargo</label>
-                <input 
-                  type="text" 
-                  value={activeStory.author.role}
-                  onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, role: e.target.value}})}
-                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50"
-                />
-              </section>
-              <section className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Entidade</label>
-                <input 
-                  type="text" 
-                  value={activeStory.entity}
-                  onChange={(e) => setActiveStory({...activeStory, entity: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50"
-                />
-              </section>
-              <section className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Tipo</label>
-                <select 
-                  value={activeStory.type}
-                  onChange={(e) => setActiveStory({...activeStory, type: e.target.value as any})}
-                  className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-primary/50 appearance-none text-slate-300"
-                >
-                  <option value="match">Match</option>
-                  <option value="transfer">Transfer</option>
-                  <option value="news">News</option>
-                  <option value="interview">Interview</option>
-                </select>
-              </section>
+                <div className="space-y-4">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-white/30">Bloco 02: A Análise</label>
+                   <textarea 
+                    value={activeStory.content?.block2 || activeStory.whyItMatters}
+                    onChange={(e) => {
+                      if (activeStory.content) {
+                        setActiveStory({...activeStory, content: {...activeStory.content, block2: e.target.value}});
+                      } else {
+                        setActiveStory({...activeStory, whyItMatters: e.target.value});
+                      }
+                    }}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-6 text-sm font-mono text-slate-400 focus:border-primary/50 transition-all outline-none min-h-[300px] leading-relaxed"
+                  />
+                </div>
+              </div>
             </div>
+          </section>
 
-            {/* Content Blocks */}
-            <section className="space-y-6 pt-6 border-t border-white/5">
-              <div className="space-y-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                  O que aconteceu
-                  <span className="text-[10px] normal-case font-normal opacity-50">(Headline principal)</span>
-                </label>
-                <textarea 
-                  value={activeStory.content?.block1 || activeStory.whatHappened}
-                  onChange={(e) => {
-                    if (activeStory.content) {
-                      setActiveStory({...activeStory, content: {...activeStory.content, block1: e.target.value}});
-                    } else {
-                      setActiveStory({...activeStory, whatHappened: e.target.value});
-                    }
-                  }}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg leading-relaxed text-slate-300 focus:outline-none focus:border-primary/50 min-h-[150px]"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Porque importa</label>
-                <textarea 
-                  value={activeStory.content?.block2 || activeStory.whyItMatters}
-                  onChange={(e) => {
-                    if (activeStory.content) {
-                      setActiveStory({...activeStory, content: {...activeStory.content, block2: e.target.value}});
-                    } else {
-                      setActiveStory({...activeStory, whyItMatters: e.target.value});
-                    }
-                  }}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-primary/50 min-h-[100px]"
-                />
-              </div>
-            </section>
-
-            {/* Media */}
-            <section className="pt-6 border-t border-white/5">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-4">Média Associada</label>
-              <div className="aspect-video w-full rounded-lg border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-3 hover:bg-white/5 hover:border-primary/30 transition-all cursor-pointer group">
-                {activeStory.image ? (
-                  <div className="relative w-full h-full">
-                    <img src={activeStory.image} className="w-full h-full object-cover rounded-lg opacity-40 group-hover:opacity-60 transition-opacity" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <ImageIcon className="w-8 h-8 mb-2 text-white/50" />
-                      <span className="text-sm text-white font-medium">Alterar imagem</span>
+          {/* Media Edit */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-4 text-white/20">
+               <span className="text-[10px] font-black uppercase tracking-[0.5em]">03</span>
+               <div className="h-px flex-1 bg-white/5" />
+               <span className="text-[10px] font-mono uppercase tracking-widest">Digital Assets</span>
+            </div>
+            <div className="aspect-[21/9] w-full rounded-2xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-4 hover:bg-white/5 hover:border-primary/20 transition-all cursor-pointer group overflow-hidden">
+              {activeStory.image ? (
+                <div className="relative w-full h-full">
+                  <img src={activeStory.image} className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 blur-[2px] group-hover:blur-0" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <ImageIcon className="w-6 h-6 text-primary" />
                     </div>
+                    <span className="text-[10px] text-white font-black uppercase tracking-widest">Alterar Visual Principal</span>
                   </div>
-                ) : (
-                  <>
-                    <ImageIcon className="w-10 h-10 text-slate-700" />
-                    <span className="text-sm text-slate-500">Click para carregar imagem</span>
-                  </>
-                )}
-              </div>
-            </section>
-          </div>
+                </div>
+              ) : (
+                <>
+                  <ImageIcon className="w-12 h-12 text-white/10 group-hover:text-primary transition-colors" />
+                  <span className="text-[10px] text-white/20 uppercase tracking-widest">Inserir Assets Digitais</span>
+                </>
+              )}
+            </div>
+          </section>
         </div>
       </main>
 
-      {/* Toast Notification */}
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: showToast ? 1 : 0, y: showToast ? 0 : 50 }}
-        className="fixed bottom-8 right-8 bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 z-50"
-      >
-        <CheckCircle2 className="w-5 h-5" />
-        Alterações guardadas com sucesso.
-      </motion.div>
+      {/* Modern Success Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div 
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed bottom-12 right-12 bg-primary text-black px-8 py-5 rounded-2xl shadow-[0_20px_50px_rgba(var(--primary),0.4)] flex items-center gap-4 z-[100]"
+          >
+            <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Successo</span>
+              <span className="text-sm font-bold tracking-tight">Narrativa publicada no Journal.</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
