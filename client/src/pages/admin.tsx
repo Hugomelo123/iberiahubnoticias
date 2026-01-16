@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut } from 'lucide-react';
-import { stories as initialStories } from '@/lib/mockData';
+import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare } from 'lucide-react';
+import { stories as initialStories, liveMatches } from '@/lib/mockData';
 import { useLocation } from 'wouter';
 
 export default function EditorPanel() {
@@ -233,27 +233,33 @@ export default function EditorPanel() {
             </div>
 
             <div className="grid gap-4">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
-                <div className="flex items-center gap-8">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Confronto</span>
-                    <span className="text-white font-bold tracking-tighter">SAW vs G2</span>
+              {liveMatches.map((match) => (
+                <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
+                  <div className="flex items-center gap-8">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Confronto</span>
+                      <span className="text-white font-bold tracking-tighter">{match.teamA} vs {match.teamB}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Voz do Jogo</span>
+                      <span className="text-white font-bold tracking-tighter">{match.caster}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Estado</span>
+                      {match.isLive ? (
+                        <span className="text-red-500 font-black text-[10px] uppercase tracking-widest animate-pulse">Em Direto</span>
+                      ) : (
+                        <span className="text-white/20 font-black text-[10px] uppercase tracking-widest">Agendado</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Voz do Jogo</span>
-                    <span className="text-white font-bold tracking-tighter">Zorlak</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Estado</span>
-                    <span className="text-red-500 font-black text-[10px] uppercase tracking-widest animate-pulse">Em Direto</span>
+                  <div className="flex items-center gap-2">
+                    <button className="p-2 rounded-lg hover:bg-white/5 text-white/20 hover:text-white transition-colors">
+                      <Settings className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="p-2 rounded-lg hover:bg-white/5 text-white/20 hover:text-white transition-colors">
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
         </div>
