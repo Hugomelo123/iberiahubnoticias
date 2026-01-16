@@ -307,6 +307,15 @@ export default function EditorPanel() {
                         {match.isLive ? 'Em Direto' : 'Agendado'}
                       </button>
                     </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Link Stream</span>
+                      <input 
+                        className="bg-transparent border-none p-0 text-primary/60 text-[10px] font-mono focus:ring-0 w-32 truncate"
+                        value={match.link}
+                        onChange={(e) => setMatches(matches.map((m: any) => m.id === match.id ? { ...m, link: e.target.value } : m))}
+                        placeholder="https://twitch.tv/..."
+                      />
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button 
