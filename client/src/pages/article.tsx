@@ -94,10 +94,11 @@ export default function Article() {
             <div className="h-px bg-gradient-to-r from-primary/20 to-transparent w-full" />
 
             <section className="space-y-6">
-              <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-primary/60 font-black">
+              <h3 className="font-mono text-[10px] uppercase tracking-[0.4em] text-primary/60 font-black flex items-center gap-3">
+                <span className="w-8 h-px bg-primary/30" />
                 Análise IH.
               </h3>
-              <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light">
+              <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light first-letter:text-5xl first-letter:font-serif first-letter:mr-3 first-letter:float-left first-letter:text-white">
                 {story.content?.block2 || story.whyItMatters}
               </p>
             </section>

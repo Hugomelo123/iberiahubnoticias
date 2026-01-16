@@ -63,6 +63,20 @@ export default function Noticias() {
               Edição de <span className="text-white font-medium">14 de Janeiro, 2026</span>.
             </p>
           </motion.div>
+
+          <div className="hidden md:flex items-center gap-12">
+            <div className="text-right">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/20 mb-1">Status do Mercado</p>
+              <p className="text-sm font-bold text-green-500 flex items-center gap-2 justify-end">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                Altamente Ativo
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/20 mb-1">Próximo Major</p>
+              <p className="text-sm font-bold text-white uppercase tracking-tighter">Copenhaga 2026</p>
+            </div>
+          </div>
         </header>
 
         <section>
