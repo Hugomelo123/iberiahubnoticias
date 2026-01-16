@@ -94,6 +94,19 @@ function MatchCard({ match, isLarge = false }: { match: MatchLive, isLarge?: boo
       {/* Hover Background Accent */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
 
+        {match.isLive && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute top-0 left-0 w-full h-1 overflow-hidden"
+          >
+            <motion.div 
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              className="w-1/2 h-full bg-gradient-to-r from-transparent via-red-500 to-transparent"
+            />
+          </motion.div>
+        )}
       <div className="flex justify-between items-start mb-3 relative z-10">
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
           {match.competition}
@@ -126,7 +139,7 @@ function MatchCard({ match, isLarge = false }: { match: MatchLive, isLarge?: boo
             <Mic2 className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-none mb-1 opacity-60">On-Air</span>
+            <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-none mb-1 opacity-60">Voz do Jogo</span>
             <span className="text-sm text-white font-semibold leading-none group-hover:text-primary transition-colors">{match.caster}</span>
           </div>
           <motion.div
