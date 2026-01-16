@@ -98,7 +98,7 @@ export default function Article() {
                 <span className="w-8 h-px bg-primary/30" />
                 Análise IH.
               </h3>
-              <p className="text-lg md:text-xl leading-relaxed text-white/50 font-light first-letter:text-5xl first-letter:font-serif first-letter:mr-3 first-letter:float-left first-letter:text-white">
+              <p className="text-xl md:text-2xl leading-relaxed text-white/60 font-serif selection:bg-primary/30">
                 {story.content?.block2 || story.whyItMatters}
               </p>
             </section>

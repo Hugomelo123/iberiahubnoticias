@@ -78,8 +78,9 @@ export default function Noticias() {
 
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           <section className="lg:col-span-8 space-y-24">
-            <FeedGroup label="Destaques de Hoje" stories={todayStories} />
-            <FeedGroup label="Arquivo Recente" stories={yesterdayStories} />
+            <FeedGroup label="Match Protocol" stories={feedStories.filter(s => s.type === 'match')} />
+            <FeedGroup label="Grandes Reportagens" stories={feedStories.filter(s => s.type === 'interview')} />
+            <FeedGroup label="Arquivo Editorial" stories={feedStories.filter(s => s.type === 'news' || s.type === 'transfer')} />
           </section>
 
           <aside className="lg:col-span-4 lg:sticky lg:top-32 space-y-12">
