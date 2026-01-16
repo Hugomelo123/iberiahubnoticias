@@ -216,23 +216,44 @@ export default function EditorPanel() {
                <div className="h-px flex-1 bg-white/5" />
                <span className="text-[10px] font-mono uppercase tracking-widest">Digital Assets</span>
             </div>
-            <div className="aspect-[21/9] w-full rounded-2xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-4 hover:bg-white/5 hover:border-primary/20 transition-all cursor-pointer group overflow-hidden">
-              {activeStory.image ? (
-                <div className="relative w-full h-full">
-                  <img src={activeStory.image} className="w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-all duration-700 blur-[2px] group-hover:blur-0" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <ImageIcon className="w-6 h-6 text-primary" />
-                    </div>
-                    <span className="text-[10px] text-white font-black uppercase tracking-widest">Alterar Visual Principal</span>
+            {/* ... existing media edit ... */}
+          </section>
+
+          {/* Matches & Agenda Management (New) */}
+          <section className="space-y-12 pt-12 border-t border-white/5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4 text-white/20">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em]">04</span>
+                <div className="h-px w-32 bg-white/5" />
+                <span className="text-[10px] font-mono uppercase tracking-widest">Agenda & Casters</span>
+              </div>
+              <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:scale-105 transition-transform">
+                <Plus className="w-4 h-4" /> Adicionar Jogo
+              </button>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
+                <div className="flex items-center gap-8">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Confronto</span>
+                    <span className="text-white font-bold tracking-tighter">SAW vs G2</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Voz do Jogo</span>
+                    <span className="text-white font-bold tracking-tighter">Zorlak</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Estado</span>
+                    <span className="text-red-500 font-black text-[10px] uppercase tracking-widest animate-pulse">Em Direto</span>
                   </div>
                 </div>
-              ) : (
-                <>
-                  <ImageIcon className="w-12 h-12 text-white/10 group-hover:text-primary transition-colors" />
-                  <span className="text-[10px] text-white/20 uppercase tracking-widest">Inserir Assets Digitais</span>
-                </>
-              )}
+                <div className="flex items-center gap-2">
+                  <button className="p-2 rounded-lg hover:bg-white/5 text-white/20 hover:text-white transition-colors">
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </div>
           </section>
         </div>
