@@ -3,12 +3,22 @@ import { HeroStory } from '@/components/editorial/HeroStory';
 import { BriefingBlock } from '@/components/editorial/BriefingBlock';
 import { FeedGroup } from '@/components/editorial/FeedGroup';
 import { MatchesWidget } from '@/components/editorial/MatchesWidget';
-import { stories, briefingItems, liveMatches } from '@/lib/mockData';
+import { stories as initialStories, briefingItems, liveMatches as initialMatches } from '@/lib/mockData';
 import { Link } from 'wouter';
 import { LayoutDashboard, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 export default function Noticias() {
+  const [stories] = useState(() => {
+    const saved = localStorage.getItem('ih_stories');
+    return saved ? JSON.parse(saved) : initialStories;
+  });
+  const [liveMatches] = useState(() => {
+    const saved = localStorage.getItem('ih_matches');
+    return saved ? JSON.parse(saved) : initialMatches;
+  });
+  
   const mainStory = stories[0];
   const feedStories = stories.slice(1);
 

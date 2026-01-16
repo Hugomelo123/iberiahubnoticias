@@ -1,23 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare } from 'lucide-react';
-import { stories as initialStories, liveMatches } from '@/lib/mockData';
+import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2 } from 'lucide-react';
+import { stories as initialStories, liveMatches as initialMatches } from '@/lib/mockData';
 import { useLocation } from 'wouter';
 
 export default function EditorPanel() {
-  const [stories, setStories] = useState(initialStories);
-  const [activeStory, setActiveStory] = useState(initialStories[0]);
+  const [stories, setStories] = useState(() => {
+    const saved = localStorage.getItem('ih_stories');
+    return saved ? JSON.parse(saved) : initialStories;
+  });
+  const [matches, setMatches] = useState(() => {
+    const saved = localStorage.getItem('ih_matches');
+    return saved ? JSON.parse(saved) : initialMatches;
+  });
+  const [activeStory, setActiveStory] = useState(stories[0]);
   const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [, setLocation] = useLocation();
 
-  const handleSave = () => {
+  useEffect(() => {
+    localStorage.setItem('ih_stories', JSON.stringify(stories));
+  }, [stories]);
+
+  useEffect(() => {
+    localStorage.setItem('ih_matches', JSON.stringify(matches));
+  }, [matches]);
+
+  const handleSaveStory = () => {
     setIsSaving(true);
+    const updatedStories = stories.map(s => s.id === activeStory.id ? activeStory : s);
+    setStories(updatedStories);
+    
     setTimeout(() => {
       setIsSaving(false);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-    }, 800);
+    }, 600);
+  };
+
+  const toggleMatchLive = (id: string) => {
+    setMatches(matches.map(m => m.id === id ? { ...m, isLive: !m.isLive } : m));
+  };
+
+  const deleteMatch = (id: string) => {
+    setMatches(matches.filter(m => m.id !== id));
+  };
+
+  const addNewMatch = () => {
+    const newMatch = {
+      id: Math.random().toString(36).substr(2, 9),
+      teamA: 'Nova Equipa',
+      teamB: 'Oponente',
+      competition: 'Nova Competição',
+      time: '20:00',
+      isLive: false,
+      caster: 'TBD',
+      link: '#'
+    };
+    setMatches([newMatch, ...matches]);
   };
 
   const handleLogout = () => {
@@ -95,7 +135,7 @@ export default function EditorPanel() {
               <Eye className="w-5 h-5" />
             </button>
             <button 
-              onClick={handleSave}
+              onClick={handleSaveStory}
               disabled={isSaving}
               className="bg-primary text-black px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(var(--primary),0.2)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
             >
@@ -227,33 +267,54 @@ export default function EditorPanel() {
                 <div className="h-px w-32 bg-white/5" />
                 <span className="text-[10px] font-mono uppercase tracking-widest">Agenda & Casters</span>
               </div>
-              <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:scale-105 transition-transform">
+              <button 
+                onClick={addNewMatch}
+                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:scale-105 transition-transform"
+              >
                 <Plus className="w-4 h-4" /> Adicionar Jogo
               </button>
             </div>
 
             <div className="grid gap-4">
-              {liveMatches.map((match) => (
+              {matches.map((match: any) => (
                 <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
                   <div className="flex items-center gap-8">
                     <div className="flex flex-col">
                       <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Confronto</span>
-                      <span className="text-white font-bold tracking-tighter">{match.teamA} vs {match.teamB}</span>
+                      <input 
+                        className="bg-transparent border-none p-0 text-white font-bold tracking-tighter focus:ring-0 w-32"
+                        value={`${match.teamA} vs ${match.teamB}`}
+                        onChange={(e) => {
+                          const [a, b] = e.target.value.split(' vs ');
+                          setMatches(matches.map((m: any) => m.id === match.id ? { ...m, teamA: a || m.teamA, teamB: b || m.teamB } : m));
+                        }}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Voz do Jogo</span>
-                      <span className="text-white font-bold tracking-tighter">{match.caster}</span>
+                      <input 
+                        className="bg-transparent border-none p-0 text-white font-bold tracking-tighter focus:ring-0 w-24"
+                        value={match.caster}
+                        onChange={(e) => setMatches(matches.map((m: any) => m.id === match.id ? { ...m, caster: e.target.value } : m))}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Estado</span>
-                      {match.isLive ? (
-                        <span className="text-red-500 font-black text-[10px] uppercase tracking-widest animate-pulse">Em Direto</span>
-                      ) : (
-                        <span className="text-white/20 font-black text-[10px] uppercase tracking-widest">Agendado</span>
-                      )}
+                      <button 
+                        onClick={() => toggleMatchLive(match.id)}
+                        className={`font-black text-[10px] uppercase tracking-widest ${match.isLive ? 'text-red-500 animate-pulse' : 'text-white/20'}`}
+                      >
+                        {match.isLive ? 'Em Direto' : 'Agendado'}
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => deleteMatch(match.id)}
+                      className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                     <button className="p-2 rounded-lg hover:bg-white/5 text-white/20 hover:text-white transition-colors">
                       <Settings className="w-4 h-4" />
                     </button>

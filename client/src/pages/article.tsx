@@ -1,13 +1,18 @@
 import { Layout } from '@/components/editorial/Layout';
-import { stories } from '@/lib/mockData';
+import { stories as initialStories } from '@/lib/mockData';
 import { useRoute, Link } from 'wouter';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, Share2, Bookmark, User, Clock, ChevronRight } from 'lucide-react';
 import NotFound from './not-found';
+import { useState } from 'react';
 
 export default function Article() {
+  const [stories] = useState(() => {
+    const saved = localStorage.getItem('ih_stories');
+    return saved ? JSON.parse(saved) : initialStories;
+  });
   const [match, params] = useRoute('/noticias/:slug');
-  const story = stories.find(s => s.slug === params?.slug);
+  const story = stories.find((s: any) => s.slug === params?.slug);
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
