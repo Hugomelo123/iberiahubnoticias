@@ -117,9 +117,9 @@ export default function Noticias() {
       <footer className="mt-32 pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] pb-16">
         <p>© 2026 IberiaHub Media Group</p>
         <div className="flex gap-8">
-          <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
-          <a href="#" className="hover:text-primary transition-colors">Termos</a>
-          <a href="#" className="hover:text-primary transition-colors">Redação</a>
+          <Link href="/privacidade" className="hover:text-primary transition-colors cursor-pointer">Privacidade</Link>
+          <Link href="/termos" className="hover:text-primary transition-colors cursor-pointer">Termos</Link>
+          <Link href="/redacao" className="hover:text-primary transition-colors cursor-pointer">Redação</Link>
         </div>
       </footer>
     </Layout>

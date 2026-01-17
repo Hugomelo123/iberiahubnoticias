@@ -8,6 +8,9 @@ import Noticias from "@/pages/noticias";
 import Article from "@/pages/article";
 import Admin from "@/pages/admin";
 import Login from "@/pages/login";
+import Privacidade from "@/pages/legal/privacidade";
+import Termos from "@/pages/legal/termos";
+import Redacao from "@/pages/legal/redacao";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
   const isAuth = sessionStorage.getItem('isEditor') === 'true';
@@ -24,6 +27,9 @@ function Router() {
       <Route path="/noticias" component={Noticias} />
       <Route path="/noticias/:slug" component={Article} />
       <Route path="/login" component={Login} />
+      <Route path="/privacidade" component={Privacidade} />
+      <Route path="/termos" component={Termos} />
+      <Route path="/redacao" component={Redacao} />
       <PrivateRoute path="/admin" component={Admin} />
       <Route path="/">
         <Redirect to="/noticias" />
