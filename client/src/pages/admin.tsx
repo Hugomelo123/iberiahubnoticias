@@ -273,14 +273,16 @@ export default function EditorPanel() {
               </button>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-6">
               {matches.map((match: any) => (
-                <div key={match.id} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
-                  <div className="flex items-center gap-8">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Confronto</span>
+                <div key={match.id} className="bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:border-primary/30 transition-all group relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="grid md:grid-cols-4 gap-8 relative z-10">
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Confronto</span>
                       <input 
-                        className="bg-transparent border-none p-0 text-white font-bold tracking-tighter focus:ring-0 w-32"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-bold tracking-tighter focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
                         value={`${match.teamA} vs ${match.teamB}`}
                         onChange={(e) => {
                           const [a, b] = e.target.value.split(' vs ');
@@ -288,43 +290,40 @@ export default function EditorPanel() {
                         }}
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Voz do Jogo</span>
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Voz do Jogo</span>
                       <input 
-                        className="bg-transparent border-none p-0 text-white font-bold tracking-tighter focus:ring-0 w-24"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-bold tracking-tighter focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
                         value={match.caster}
                         onChange={(e) => setMatches(matches.map((m: any) => m.id === match.id ? { ...m, caster: e.target.value } : m))}
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Estado</span>
-                      <button 
-                        onClick={() => toggleMatchLive(match.id)}
-                        className={`font-black text-[10px] uppercase tracking-widest ${match.isLive ? 'text-red-500 animate-pulse' : 'text-white/20'}`}
-                      >
-                        {match.isLive ? 'Em Direto' : 'Agendado'}
-                      </button>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono text-white/20 uppercase mb-1">Link Stream</span>
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Link Stream</span>
                       <input 
-                        className="bg-transparent border-none p-0 text-primary/60 text-[10px] font-mono focus:ring-0 w-32 truncate"
+                        className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-primary/60 text-xs font-mono focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
                         value={match.link}
                         onChange={(e) => setMatches(matches.map((m: any) => m.id === match.id ? { ...m, link: e.target.value } : m))}
                         placeholder="https://twitch.tv/..."
                       />
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => deleteMatch(match.id)}
-                      className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    <button className="p-2 rounded-lg hover:bg-white/5 text-white/20 hover:text-white transition-colors">
-                      <Settings className="w-4 h-4" />
-                    </button>
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Controlo</span>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => toggleMatchLive(match.id)}
+                          className={`flex-1 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all border ${match.isLive ? 'bg-red-500/10 border-red-500/50 text-red-500 animate-pulse' : 'bg-white/5 border-white/10 text-white/20 hover:text-white hover:border-white/30'}`}
+                        >
+                          {match.isLive ? 'Em Direto' : 'Agendar Live'}
+                        </button>
+                        <button 
+                          onClick={() => deleteMatch(match.id)}
+                          className="p-2 rounded-lg bg-red-500/5 border border-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
