@@ -28,7 +28,7 @@ export default function LoginPage() {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-24 h-24 object-contain mx-auto mb-6" />
+          <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-24 h-24 object-contain mx-auto mb-6 block" />
           <h1 className="font-serif text-3xl font-bold text-white mb-2">Acesso Restrito</h1>
           <p className="text-slate-500 text-sm">Identifique-se para entrar no Editor Hub.</p>
         </div>

@@ -31,7 +31,7 @@ export default function Noticias() {
         <div className="flex items-center gap-8">
            <Link href="/noticias">
              <div className="flex items-center gap-3 group cursor-pointer">
-               <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
+               <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform block" />
                <span className="font-serif text-2xl font-bold tracking-tighter hover:text-primary transition-colors text-white">IH.</span>
              </div>
            </Link>
