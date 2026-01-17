@@ -332,6 +332,18 @@ export default function EditorPanel() {
               ))}
             </div>
           </section>
+          <section className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mt-12 relative overflow-hidden group">
+            <div className="flex items-start gap-4 relative z-10">
+              <ShieldAlert className="w-5 h-5 text-primary" />
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-white">Manual Editorial v4.0</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-serif italic">
+                  "O IberiaHub vive da qualidade, não da rapidez. Todas as imagens devem manter a estética desaturada e granulada. Os textos devem ser verificados pelo Ricardo antes da publicação final. A Voz do Jogo é o nosso maior asset."
+                </p>
+              </div>
+            </div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-2xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
+          </section>
         </div>
       </main>
 
