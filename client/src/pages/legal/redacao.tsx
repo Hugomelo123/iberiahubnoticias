@@ -46,7 +46,7 @@ export default function Redacao() {
           className="space-y-24"
         >
           <header className="max-w-3xl">
-            <div className="h-px w-24 bg-primary mb-8" />
+            <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-20 h-20 object-contain mb-8" />
             <h1 className="font-serif text-5xl md:text-8xl font-bold text-white mb-8 tracking-tighter leading-[0.9]">A Nossa <span className="italic text-primary font-light">Equipa</span></h1>
             <p className="text-white/60 font-serif text-xl leading-relaxed">
               O coletivo por trás da curadoria definitiva do Counter-Strike ibérico. Profissionais dedicados à excelência técnica e editorial.

@@ -74,9 +74,7 @@ export default function EditorPanel() {
       <aside className="w-72 border-r border-white/5 bg-[#08080a] flex flex-col relative z-10">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-10">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(var(--primary),0.3)]">
-              <LayoutDashboard className="w-5 h-5 text-black" />
-            </div>
+            <img src="/attached_assets/logo_1768644725692.png" alt="Logo" className="w-8 h-8 object-contain" />
             <h1 className="font-serif text-xl font-bold text-white tracking-tighter">
               IH.<span className="italic text-primary">Editor</span>
             </h1>
