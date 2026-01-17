@@ -12,22 +12,27 @@ export function HeroStory({ story }: HeroStoryProps) {
     <Link href={`/noticias/${story.slug}`}>
       <div className="group cursor-pointer relative mb-24">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          <div className="lg:col-span-7 relative">
+          <div className="lg:col-span-7 relative group/img">
             <motion.div 
-              whileHover={{ scale: 1.01 }}
-              className="aspect-[16/9] w-full overflow-hidden rounded-2xl relative bg-muted ring-1 ring-white/10 shadow-2xl"
+              whileHover={{ scale: 1.02, rotateY: 5, rotateX: -2 }}
+              style={{ perspective: 1000 }}
+              className="aspect-[16/9] w-full overflow-hidden rounded-2xl relative bg-muted ring-1 ring-white/10 shadow-[0_0_50px_-12px_rgba(var(--primary),0.3)] transition-all duration-700"
             >
               {story.image ? (
-                <img 
-                  src={story.image} 
-                  alt={story.title}
-                  className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 group-hover:blur-[2px] opacity-80 group-hover:opacity-100"
-                />
+                <div className="relative w-full h-full overflow-hidden">
+                  <img 
+                    src={story.image} 
+                    alt={story.title}
+                    className="w-full h-full object-cover transition-all duration-1000 group-hover/img:scale-110 grayscale-[0.3] group-hover/img:grayscale-0"
+                  />
+                  {/* Glitch Overlay */}
+                  <div className="absolute inset-0 bg-primary/10 mix-blend-overlay opacity-0 group-hover/img:opacity-100 transition-opacity pointer-events-none" />
+                </div>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-primary/20 to-background" />
               )}
               
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-transparent opacity-90" />
               
               <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
