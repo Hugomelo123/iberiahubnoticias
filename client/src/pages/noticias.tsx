@@ -5,7 +5,7 @@ import { FeedGroup } from '@/components/editorial/FeedGroup';
 import { MatchesWidget } from '@/components/editorial/MatchesWidget';
 import { stories as initialStories, briefingItems, liveMatches as initialMatches } from '@/lib/mockData';
 import { Link } from 'wouter';
-import { LayoutDashboard, Bell } from 'lucide-react';
+import { LayoutDashboard, Bell, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -97,6 +97,35 @@ export default function Noticias() {
           </section>
 
           <aside className="lg:col-span-4 lg:sticky lg:top-32 space-y-12">
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="p-1 border-2 border-primary/20 rounded-3xl bg-gradient-to-br from-primary/5 via-background to-background relative overflow-hidden group shadow-[0_0_40px_-10px_rgba(var(--primary),0.2)]"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-primary/20 overflow-hidden">
+                <motion.div 
+                  animate={{ x: ["-100%", "100%"] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="w-1/2 h-full bg-primary"
+                />
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">IberiaHub Origin</span>
+                  <div className="flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                    <span className="text-[9px] font-mono text-primary/60">60S_READY</span>
+                  </div>
+                </div>
+                <h4 className="font-serif text-3xl font-bold italic text-white leading-none tracking-tighter">O Dia em 60s</h4>
+                <p className="text-sm text-white/50 leading-relaxed font-serif">
+                  A nossa síntese vertical ultra-rápida. O resumo essencial do CS ibérico para quem não tem tempo a perder.
+                </p>
+                <button className="w-full py-4 bg-primary text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white transition-all rounded-2xl flex items-center justify-center gap-3 group/btn shadow-xl">
+                  <Zap className="w-4 h-4 fill-current" /> Ver Agora
+                </button>
+              </div>
+            </motion.div>
+
             <MatchesWidget matches={liveMatches} />
             <BriefingBlock items={briefingItems} />
             
