@@ -70,7 +70,7 @@ export default function Noticias() {
             </h1>
             <p className="text-white/40 text-xl font-light leading-relaxed border-l border-primary/30 pl-6">
               A curadoria definitiva do Counter-Strike ibérico. <br/>
-              Edição de <span className="text-white font-medium">14 de Janeiro, 2026</span>.
+              Edição de <span className="text-white font-medium">{new Date().toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' })}</span>.
             </p>
           </motion.div>
 
