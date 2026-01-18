@@ -2,19 +2,21 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { Lock, ArrowRight, ShieldAlert } from 'lucide-react';
+import { login } from '@/lib/api';
 
 export default function LoginPage() {
   const [, setLocation] = useLocation();
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulação de acesso "especial" para o editor
-    if (password === 'iberia2026') {
-      sessionStorage.setItem('isEditor', 'true');
+    setError(false);
+    
+    try {
+      await login(password);
       setLocation('/admin');
-    } else {
+    } catch (err) {
       setError(true);
       setTimeout(() => setError(false), 2000);
     }
@@ -28,7 +30,7 @@ export default function LoginPage() {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-24 h-24 object-contain mx-auto mb-6 block" />
+          <img src="/logo.png" alt="IberiaHub Logo" className="w-24 h-24 object-contain mx-auto mb-6 block" />
           <h1 className="font-serif text-3xl font-bold text-white mb-2">Acesso Restrito</h1>
           <p className="text-slate-500 text-sm">Identifique-se para entrar no Editor Hub.</p>
         </div>

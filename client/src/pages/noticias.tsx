@@ -1,24 +1,50 @@
+import { useState, useEffect } from 'react';
 import { Layout } from '@/components/editorial/Layout';
 import { HeroStory } from '@/components/editorial/HeroStory';
 import { BriefingBlock } from '@/components/editorial/BriefingBlock';
 import { FeedGroup } from '@/components/editorial/FeedGroup';
 import { MatchesWidget } from '@/components/editorial/MatchesWidget';
-import { stories as initialStories, briefingItems, liveMatches as initialMatches } from '@/lib/mockData';
+import { getStories, getMatches, getBriefings } from '@/lib/api';
 import { Link } from 'wouter';
 import { LayoutDashboard, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
 export default function Noticias() {
-  const [stories] = useState(() => {
-    const saved = localStorage.getItem('ih_stories');
-    return saved ? JSON.parse(saved) : initialStories;
-  });
-  const [liveMatches] = useState(() => {
-    const saved = localStorage.getItem('ih_matches');
-    return saved ? JSON.parse(saved) : initialMatches;
-  });
-  
+  const [stories, setStories] = useState<any[]>([]);
+  const [liveMatches, setLiveMatches] = useState<any[]>([]);
+  const [briefings, setBriefings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [storiesData, matchesData, briefingsData] = await Promise.all([
+          getStories(),
+          getMatches(),
+          getBriefings()
+        ]);
+        setStories(storiesData);
+        setLiveMatches(matchesData);
+        setBriefings(briefingsData);
+      } catch (err) {
+        console.error("Erro ao carregar dados:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-primary animate-pulse">A carregar...</div>
+        </div>
+      </Layout>
+    );
+  }
+
   const mainStory = stories[0];
   const feedStories = stories.slice(1);
 
@@ -31,7 +57,7 @@ export default function Noticias() {
         <div className="flex items-center gap-8">
            <Link href="/noticias">
              <div className="flex items-center gap-3 group cursor-pointer">
-               <img src="/attached_assets/logo_1768644725692.png" alt="IberiaHub Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform block" />
+               <img src="/logo.png" alt="IberiaHub Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform block" />
                <span className="font-serif text-2xl font-bold tracking-tighter hover:text-primary transition-colors text-white">IH.</span>
              </div>
            </Link>
@@ -98,7 +124,7 @@ export default function Noticias() {
 
           <aside className="lg:col-span-4 lg:sticky lg:top-32 space-y-12">
             <MatchesWidget matches={liveMatches} />
-            <BriefingBlock items={briefingItems} />
+            <BriefingBlock items={briefings} />
             
             <motion.div 
               whileHover={{ y: -5 }}

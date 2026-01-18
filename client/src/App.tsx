@@ -8,6 +8,7 @@ import Noticias from "@/pages/noticias";
 import Article from "@/pages/article";
 import Admin from "@/pages/admin";
 import Login from "@/pages/login";
+import Agenda from "@/pages/agenda";
 import Privacidade from "@/pages/legal/privacidade";
 import Termos from "@/pages/legal/termos";
 import Redacao from "@/pages/legal/redacao";
@@ -26,6 +27,7 @@ function Router() {
     <Switch>
       <Route path="/noticias" component={Noticias} />
       <Route path="/noticias/:slug" component={Article} />
+      <Route path="/agenda" component={Agenda} />
       <Route path="/login" component={Login} />
       <Route path="/privacidade" component={Privacidade} />
       <Route path="/termos" component={Termos} />

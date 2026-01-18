@@ -1,69 +1,113 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2 } from 'lucide-react';
-import { stories as initialStories, liveMatches as initialMatches } from '@/lib/mockData';
+import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2, ShieldAlert } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, logout } from '@/lib/api';
 
 export default function EditorPanel() {
-  const [stories, setStories] = useState(() => {
-    const saved = localStorage.getItem('ih_stories');
-    return saved ? JSON.parse(saved) : initialStories;
-  });
-  const [matches, setMatches] = useState(() => {
-    const saved = localStorage.getItem('ih_matches');
-    return saved ? JSON.parse(saved) : initialMatches;
-  });
-  const [activeStory, setActiveStory] = useState(stories[0]);
+  const [stories, setStories] = useState<any[]>([]);
+  const [matches, setMatches] = useState<any[]>([]);
+  const [activeStory, setActiveStory] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    localStorage.setItem('ih_stories', JSON.stringify(stories));
-  }, [stories]);
+    async function loadData() {
+      try {
+        const [storiesData, matchesData] = await Promise.all([
+          getStories(),
+          getMatches()
+        ]);
+        setStories(storiesData);
+        setMatches(matchesData);
+        if (storiesData.length > 0) {
+          setActiveStory(storiesData[0]);
+        }
+      } catch (err) {
+        console.error("Erro:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('ih_matches', JSON.stringify(matches));
-  }, [matches]);
-
-  const handleSaveStory = () => {
+  const handleSaveStory = async () => {
+    if (!activeStory) return;
     setIsSaving(true);
-    const updatedStories = stories.map(s => s.id === activeStory.id ? activeStory : s);
-    setStories(updatedStories);
     
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      const updated = await updateStory(activeStory.id, activeStory);
+      setStories(stories.map(s => s.id === updated.id ? updated : s));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-    }, 600);
+    } catch (err) {
+      console.error("Erro ao guardar:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const toggleMatchLive = (id: string) => {
-    setMatches(matches.map(m => m.id === id ? { ...m, isLive: !m.isLive } : m));
+  const toggleMatchLive = async (id: string) => {
+    const match = matches.find((m: any) => m.id === id);
+    if (!match) return;
+    
+    try {
+      const updated = await updateMatch(id, { isLive: !match.isLive });
+      setMatches(matches.map((m: any) => m.id === id ? updated : m));
+    } catch (err) {
+      console.error("Erro:", err);
+    }
   };
 
-  const deleteMatch = (id: string) => {
-    setMatches(matches.filter(m => m.id !== id));
+  const handleDeleteMatch = async (id: string) => {
+    try {
+      await apiDeleteMatch(id);
+      setMatches(matches.filter((m: any) => m.id !== id));
+    } catch (err) {
+      console.error("Erro:", err);
+    }
   };
 
-  const addNewMatch = () => {
-    const newMatch = {
-      id: Math.random().toString(36).substr(2, 9),
-      teamA: 'Nova Equipa',
-      teamB: 'Oponente',
-      competition: 'Nova Competição',
-      time: '20:00',
-      isLive: false,
-      caster: 'TBD',
-      link: '#'
-    };
-    setMatches([newMatch, ...matches]);
+  const addNewMatch = async () => {
+    try {
+      const newMatch = await createMatch({
+        teamA: 'Nova Equipa',
+        teamB: 'Oponente',
+        competition: 'Nova Competição',
+        time: '20:00',
+        isLive: false,
+        caster: 'TBD',
+        link: '#'
+      });
+      setMatches([newMatch, ...matches]);
+    } catch (err) {
+      console.error("Erro:", err);
+    }
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('isEditor');
+    logout();
     setLocation('/login');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+        <div className="text-primary animate-pulse">A carregar editor...</div>
+      </div>
+    );
+  }
+
+  if (!activeStory) {
+    return (
+      <div className="min-h-screen bg-[#050507] flex items-center justify-center">
+        <div className="text-white/40">Sem stories disponíveis</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#050507] text-slate-400 font-sans flex overflow-hidden">
@@ -74,7 +118,7 @@ export default function EditorPanel() {
       <aside className="w-72 border-r border-white/5 bg-[#08080a] flex flex-col relative z-10">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-10">
-            <img src="/attached_assets/logo_1768644725692.png" alt="Logo" className="w-8 h-8 object-contain block" />
+            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain block" />
             <h1 className="font-serif text-xl font-bold text-white tracking-tighter">
               IH.<span className="italic text-primary">Editor</span>
             </h1>
@@ -317,7 +361,7 @@ export default function EditorPanel() {
                           {match.isLive ? 'Em Direto' : 'Agendar Live'}
                         </button>
                         <button 
-                          onClick={() => deleteMatch(match.id)}
+                          onClick={() => handleDeleteMatch(match.id)}
                           className="p-2 rounded-lg bg-red-500/5 border border-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
                         >
                           <Trash2 className="w-4 h-4" />

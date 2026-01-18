@@ -1,14 +1,13 @@
 import { MatchLive } from '@/lib/mockData';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Tv, Mic2, ExternalLink, X, Calendar } from 'lucide-react';
-import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Tv, Mic2, ExternalLink } from 'lucide-react';
+import { Link } from 'wouter';
 
 interface MatchesWidgetProps {
   matches: MatchLive[];
 }
 
 export function MatchesWidget({ matches }: MatchesWidgetProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const displayMatches = matches.slice(0, 2);
 
   return (
@@ -25,59 +24,19 @@ export function MatchesWidget({ matches }: MatchesWidgetProps) {
       </div>
 
       {matches.length > 2 && (
-        <button 
-          onClick={() => setIsOpen(true)}
-          className="w-full py-2.5 text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors border border-dashed border-white/10 rounded-lg hover:border-primary/30 uppercase tracking-[0.2em]"
-        >
-          Ver agenda completa [+{matches.length - 2}]
-        </button>
-      )}
-
-      {/* Inovative Full Overlay Agenda */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-[#0a0a0c]/95 backdrop-blur-xl p-6 md:p-12 overflow-y-auto"
+        <Link href="/agenda">
+          <button 
+            className="w-full py-2.5 text-[10px] font-mono text-muted-foreground hover:text-primary transition-colors border border-dashed border-white/10 rounded-lg hover:border-primary/30 uppercase tracking-[0.2em]"
           >
-            <div className="max-w-4xl mx-auto">
-              <div className="flex justify-between items-center mb-12">
-                <div>
-                  <h2 className="font-serif text-4xl font-bold text-white mb-2">Broadcast Center</h2>
-                  <p className="text-muted-foreground text-sm font-mono tracking-wider">Acompanha todos os diretos e a agenda ibérica.</p>
-                </div>
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all hover:rotate-90"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                {matches.map((match) => (
-                  <MatchCard key={match.id} match={match} isLarge />
-                ))}
-              </div>
-
-              <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-40">
-                <div className="flex items-center gap-4">
-                  <Calendar className="w-5 h-5" />
-                  <span className="text-xs font-mono">AGENDA_SINCRONIZADA_V4</span>
-                </div>
-                <div className="text-xs font-mono">IBERIAHUB_BROADCAST_SYSTEM</div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Ver agenda completa [+{matches.length - 2} jogos]
+          </button>
+        </Link>
+      )}
     </div>
   );
 }
 
-function MatchCard({ match, isLarge = false }: { match: MatchLive, isLarge?: boolean }) {
+function MatchCard({ match }: { match: MatchLive }) {
   return (
     <motion.a
       href={match.link}
@@ -89,7 +48,7 @@ function MatchCard({ match, isLarge = false }: { match: MatchLive, isLarge?: boo
         boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
       }}
       whileTap={{ scale: 0.97 }}
-      className={`block p-4 rounded-xl bg-card/20 border border-white/5 hover:border-primary/30 transition-all group overflow-hidden relative ${isLarge ? 'p-6' : ''}`}
+      className={`block p-4 rounded-xl bg-card/20 border border-white/5 hover:border-primary/30 transition-all group overflow-hidden relative`}
     >
       {/* Hover Background Accent */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
