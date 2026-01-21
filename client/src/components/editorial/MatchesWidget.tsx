@@ -84,7 +84,7 @@ function MatchCard({ match }: { match: MatchLive }) {
       </div>
 
       <div className="flex items-center justify-between gap-4 mb-4 relative z-10">
-        <div className={`flex-1 font-bold text-white tracking-tighter ${isLarge ? 'text-3xl' : 'text-lg'}`}>
+        <div className="flex-1 font-bold text-white tracking-tighter text-lg">
           {match.teamA} <span className="text-primary/40 mx-1 font-serif italic text-lg lg:text-xl font-normal">vs</span> {match.teamB}
         </div>
         <div className="text-[10px] font-mono text-muted-foreground border border-white/10 px-2 py-1 rounded-sm uppercase tracking-tighter">
