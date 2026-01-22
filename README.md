@@ -1,34 +1,34 @@
 # IberiaHub Notícias
 
-Portal de notícias de Counter-Strike para a comunidade ibérica (PT + ES).  
-Rápido, limpo, editorial.
+Counter-Strike news platform for the Iberian community (PT + ES).  
+Fast, clean, editorial.
 
 ---
 
-## O que é
+## What it is
 
-Site de notícias CS com CMS próprio. Estrutura editorial simples e base técnica sólida.  
-Criado para crescer sem virar caos.
-
----
-
-## Para quem
-
-- Jogadores e fãs de CS em Portugal e Espanha
-- Criadores de conteúdo e equipas
-- Projetos de esports que precisam de visibilidade
+CS news site with custom CMS. Simple editorial structure and solid technical foundation.  
+Built to grow without becoming chaos.
 
 ---
 
-## O que faz
+## Who it's for
+
+- CS players and fans in Portugal and Spain
+- Content creators and teams
+- Esports projects that need visibility
+
+---
+
+## What it does
 
 ```
-📰  Notícias com CMS completo
-🔎  Organização por categorias
-⚡  Frontend rápido e leve
-🔐  Admin panel separado
-🎯  Agenda de jogos ao vivo
-📊  Briefings editoriais
+📰  News with complete CMS
+🔎  Organization by categories
+⚡  Fast and lightweight frontend
+🔐  Separate admin panel
+🎯  Live match schedule
+📊  Editorial briefings
 ```
 
 ---
@@ -43,7 +43,7 @@ Style      Tailwind CSS 4 + Shadcn UI
 Animation  Framer Motion
 ```
 
-Estrutura: `client/` `server/` `shared/`
+Structure: `client/` `server/` `shared/`
 
 ---
 
@@ -56,18 +56,18 @@ pnpm install
 PORT=8081 pnpm dev
 ```
 
-Abrir: `http://localhost:8081/noticias`
+Open: `http://localhost:8081/noticias`
 
-**Admin:** `/admin` com password `iberia2026`
+**Admin:** `/admin` with password `iberia2026`
 
 ---
 
-## Estrutura
+## Structure
 
 ```
 client/src/
-├── pages/           9 páginas
-├── components/      65+ componentes
+├── pages/           9 pages
+├── components/      65+ components
 └── lib/             API client
 
 server/
@@ -83,7 +83,7 @@ shared/
 
 ## API
 
-### Público
+### Public
 ```
 GET  /api/stories
 GET  /api/stories/:slug
@@ -92,7 +92,7 @@ GET  /api/briefings
 POST /api/auth/login
 ```
 
-### Protegido
+### Protected
 ```
 POST   /api/stories
 PUT    /api/stories/:id
@@ -108,18 +108,18 @@ DELETE /api/briefings/:id
 
 ## Deploy
 
-**Atual:** In-memory storage (temporário)  
-**Produção:** Migrar para PostgreSQL
+**Current:** In-memory storage (temporary)  
+**Production:** Migrate to PostgreSQL
 
-### Railway (recomendado)
+### Railway (recommended)
 ```
-1. Push para GitHub
+1. Push to GitHub
 2. railway.app → New Project
 3. Add PostgreSQL
-4. Deploy automático
+4. Auto deploy
 ```
 
-### Env vars necessárias
+### Required env vars
 ```env
 DATABASE_URL=postgresql://...
 AUTH_PASSWORD=***
@@ -128,17 +128,17 @@ PORT=8081
 NODE_ENV=production
 ```
 
-Ver `GUIA_DEPLOY.md` para detalhes.
+See `GUIA_DEPLOY.md` for details.
 
 ---
 
 ## Docs
 
 ```
-DOCUMENTACAO_COMPLETA.md    Arquitetura completa
-CODIGOS_COMPLETOS.md        Código de referência
-GUIA_DEPLOY.md              Deploy passo-a-passo
-RELATORIO_TESTES.md         Testes e checklist
+DOCUMENTACAO_COMPLETA.md    Complete architecture
+CODIGOS_COMPLETOS.md        Code reference
+GUIA_DEPLOY.md              Deploy step-by-step
+RELATORIO_TESTES.md         Tests and checklist
 ```
 
 ---
@@ -153,17 +153,17 @@ Components        65+
 API endpoints     13
 ```
 
-**Versão:** 5.0.0  
-**Pronto:** 85%
+**Version:** 5.0.0  
+**Ready:** 85%
 
 ---
 
-## Licença
+## License
 
-Proprietário © 2026 IberiaHub
+Proprietary © 2026 IberiaHub
 
 ---
 
-**Feito para a comunidade CS ibérica**
+**Built for the Iberian CS community**
 
-*Janeiro 2026*
+*January 2026*
