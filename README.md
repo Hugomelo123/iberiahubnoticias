@@ -1,256 +1,169 @@
-# 🎮 IberiaHub Notícias V5.0
+# IberiaHub Notícias
 
-**A Curadoria Definitiva do CS Ibérico**
-
-Portal de notícias editorial premium para Counter-Strike 2 focado no cenário português e espanhol. Built with React 19, Express, TypeScript e Framer Motion.
-
----
-
-## ✨ Features
-
-- 🎨 **Design Editorial Premium** - Interface minimalista inspirada em revistas
-- ⚡ **Real-time Updates** - Sistema de briefings e live matches
-- 🔐 **Admin Panel** - CMS completo para edição de conteúdo
-- 📱 **Fully Responsive** - Otimizado para mobile, tablet e desktop
-- 🎭 **Smooth Animations** - Transições fluidas com Framer Motion
-- 📊 **Broadcast Center** - Página dedicada para agenda de jogos
+Portal de notícias de Counter-Strike para a comunidade ibérica (PT + ES).  
+Rápido, limpo, editorial.
 
 ---
 
-## 🛠️ Tech Stack
+## O que é
 
-### Frontend
-- **React 19** - UI framework
-- **Wouter** - Lightweight routing
-- **Framer Motion** - Animations
-- **TanStack Query** - Data fetching
-- **Tailwind CSS 4** - Styling
-- **Shadcn UI** - Component library
-
-### Backend
-- **Express** - Web server
-- **TypeScript** - Type safety
-- **Zod** - Schema validation
-- **In-memory Storage** - Temporary data layer (migrate to PostgreSQL for production)
-
-### Build & Dev
-- **Vite** - Fast dev server & bundler
-- **pnpm** - Package manager
-- **esbuild** - Fast compiler
+Site de notícias CS com CMS próprio. Estrutura editorial simples e base técnica sólida.  
+Criado para crescer sem virar caos.
 
 ---
 
-## 🚀 Quick Start
+## Para quem
 
-### Pré-requisitos
-- Node.js 20.x ou superior
-- pnpm 10.x
+- Jogadores e fãs de CS em Portugal e Espanha
+- Criadores de conteúdo e equipas
+- Projetos de esports que precisam de visibilidade
 
-### Instalação
+---
+
+## O que faz
+
+```
+📰  Notícias com CMS completo
+🔎  Organização por categorias
+⚡  Frontend rápido e leve
+🔐  Admin panel separado
+🎯  Agenda de jogos ao vivo
+📊  Briefings editoriais
+```
+
+---
+
+## Stack
+
+```
+Frontend   React 19 + TypeScript + Vite
+Backend    Node.js + Express
+State      TanStack Query
+Style      Tailwind CSS 4 + Shadcn UI
+Animation  Framer Motion
+```
+
+Estrutura: `client/` `server/` `shared/`
+
+---
+
+## Quick Start
 
 ```bash
-# Clone o repositório
 git clone https://github.com/Hugomelo123/iberiahubnoticias.git
 cd iberiahubnoticias
-
-# Instalar dependências
 pnpm install
-
-# Iniciar servidor de desenvolvimento
 PORT=8081 pnpm dev
 ```
 
-Abrir [http://localhost:8081/noticias](http://localhost:8081/noticias)
+Abrir: `http://localhost:8081/noticias`
 
-### Credenciais Admin
-- **URL:** `/admin`
-- **Password:** `iberia2026`
+**Admin:** `/admin` com password `iberia2026`
 
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura
 
 ```
-IberiaHub-Noticias/
-├── client/              # Frontend React
-│   ├── src/
-│   │   ├── pages/      # 9 páginas
-│   │   ├── components/ # Componentes UI
-│   │   └── lib/        # API client & utils
-│   └── public/         # Assets estáticos
-├── server/             # Backend Express
-│   ├── routes.ts       # 13 API endpoints
-│   ├── storage.ts      # Data layer
-│   └── index.ts        # Server setup
-├── shared/             # Código partilhado
-│   └── schema.ts       # Zod schemas
-└── docs/               # Documentação
+client/src/
+├── pages/           9 páginas
+├── components/      65+ componentes
+└── lib/             API client
+
+server/
+├── routes.ts        13 endpoints
+├── storage.ts       Data layer
+└── index.ts         Setup
+
+shared/
+└── schema.ts        Zod schemas
 ```
 
 ---
 
-## 🌐 Páginas
+## API
 
-| Rota | Descrição | Autenticação |
-|------|-----------|--------------|
-| `/noticias` | Homepage com feed | ❌ |
-| `/noticias/:slug` | Artigo individual | ❌ |
-| `/agenda` | Agenda completa de jogos | ❌ |
-| `/admin` | Painel de administração | ✅ |
-| `/login` | Login | ❌ |
-| `/privacidade` | Política de privacidade | ❌ |
-| `/termos` | Termos de serviço | ❌ |
-| `/redacao` | Sobre a redação | ❌ |
+### Público
+```
+GET  /api/stories
+GET  /api/stories/:slug
+GET  /api/matches
+GET  /api/briefings
+POST /api/auth/login
+```
 
----
-
-## 🔌 API Endpoints
-
-### Públicos
-- `GET /api/stories` - Listar todas as stories
-- `GET /api/stories/:slug` - Story por slug
-- `GET /api/matches` - Listar matches
-- `GET /api/briefings` - Listar briefings
-- `POST /api/auth/login` - Autenticação
-
-### Protegidos (requerem token)
-- `POST /api/stories` - Criar story
-- `PUT /api/stories/:id` - Editar story
-- `DELETE /api/stories/:id` - Apagar story
-- `POST /api/matches` - Criar match
-- `PUT /api/matches/:id` - Editar match
-- `DELETE /api/matches/:id` - Apagar match
-- `POST /api/briefings` - Criar briefing
-- `DELETE /api/briefings/:id` - Apagar briefing
-
----
-
-## 📦 Scripts Disponíveis
-
-```bash
-# Desenvolvimento (porta 8081)
-PORT=8081 pnpm dev
-
-# Build para produção
-pnpm build
-
-# Iniciar servidor de produção
-pnpm start
+### Protegido
+```
+POST   /api/stories
+PUT    /api/stories/:id
+DELETE /api/stories/:id
+POST   /api/matches
+PUT    /api/matches/:id
+DELETE /api/matches/:id
+POST   /api/briefings
+DELETE /api/briefings/:id
 ```
 
 ---
 
-## 🚀 Deploy para Produção
+## Deploy
 
-**⚠️ Importante:** O projeto usa **in-memory storage** temporário. Para produção, é necessário migrar para PostgreSQL.
+**Atual:** In-memory storage (temporário)  
+**Produção:** Migrar para PostgreSQL
 
-### Opção 1: Railway (Recomendado - Mais Fácil)
-1. Push do código para GitHub
-2. Criar projeto no [Railway](https://railway.app)
-3. Adicionar serviço PostgreSQL
-4. Deploy automático ✅
+### Railway (recomendado)
+```
+1. Push para GitHub
+2. railway.app → New Project
+3. Add PostgreSQL
+4. Deploy automático
+```
 
-### Opção 2: Vercel + Neon
-1. Database no [Neon.tech](https://neon.tech)
-2. Deploy no [Vercel](https://vercel.com)
-3. Configurar env vars
-
-### Variáveis de Ambiente Necessárias
+### Env vars necessárias
 ```env
-DATABASE_URL=postgresql://user:pass@host:5432/iberiahub
-AUTH_PASSWORD=seu_password_seguro
-AUTH_TOKEN=seu_jwt_token_seguro
+DATABASE_URL=postgresql://...
+AUTH_PASSWORD=***
+AUTH_TOKEN=***
 PORT=8081
 NODE_ENV=production
 ```
 
-**📖 Ver `GUIA_DEPLOY.md` para instruções completas**
+Ver `GUIA_DEPLOY.md` para detalhes.
 
 ---
 
-## 📚 Documentação
+## Docs
 
-- **`DOCUMENTACAO_COMPLETA.md`** - Arquitetura completa, stack, fluxos
-- **`CODIGOS_COMPLETOS.md`** - Todos os códigos principais
-- **`GUIA_DEPLOY.md`** - Guia passo-a-passo para produção
-- **`RELATORIO_TESTES.md`** - Testes e checklist de produção
-
----
-
-## 🎯 Roadmap
-
-### ✅ Completo
-- [x] Frontend completo (9 páginas)
-- [x] Backend API REST (13 endpoints)
-- [x] Sistema de autenticação
-- [x] CRUD stories/matches/briefings
-- [x] Admin panel funcional
-- [x] Design responsivo
-- [x] Animações premium
-
-### 🔄 Em Progresso
-- [ ] Migração para PostgreSQL
-- [ ] Sistema de uploads de imagens
-- [ ] Multi-user com roles
-- [ ] Email notifications
-
-### 📝 Planeado
-- [ ] Analytics dashboard
-- [ ] SEO optimization
-- [ ] PWA support
-- [ ] Dark/Light mode toggle
+```
+DOCUMENTACAO_COMPLETA.md    Arquitetura completa
+CODIGOS_COMPLETOS.md        Código de referência
+GUIA_DEPLOY.md              Deploy passo-a-passo
+RELATORIO_TESTES.md         Testes e checklist
+```
 
 ---
 
-## 🤝 Contribuir
+## Status
 
-Contribuições são bem-vindas! Por favor:
+```
+Dependencies       81
+Lines of code      3,300+
+Pages             9
+Components        65+
+API endpoints     13
+```
 
-1. Fork o projeto
-2. Criar branch (`git checkout -b feature/AmazingFeature`)
-3. Commit das mudanças (`git commit -m 'Add AmazingFeature'`)
-4. Push para branch (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
-
----
-
-## 📄 Licença
-
-Este projeto é privado e proprietário. Todos os direitos reservados © 2026 IberiaHub.
-
----
-
-## 👥 Equipa
-
-**Hugo Melo** - Developer  
-**IberiaHub** - Conceito & Design
-
----
-
-## 🐛 Bugs Conhecidos
-
-- Login form pode intermitentemente enviar payload vazio (workaround: login via API funciona)
-
----
-
-## 📞 Suporte
-
-Para questões e suporte, contactar através do GitHub Issues ou email.
-
----
-
-## 🙏 Agradecimentos
-
-- Shadcn UI pelos componentes base
-- Lucide React pelos ícones
-- Comunidade CS:GO/CS2 portuguesa
-
----
-
-**Status:** ✅ 85% Pronto para Produção  
 **Versão:** 5.0.0  
-**Última Atualização:** Janeiro 2026
+**Pronto:** 85%
 
 ---
 
-Feito com ❤️ para a comunidade CS Ibérica
+## Licença
+
+Proprietário © 2026 IberiaHub
+
+---
+
+**Feito para a comunidade CS ibérica**
+
+*Janeiro 2026*
