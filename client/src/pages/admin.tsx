@@ -121,14 +121,26 @@ export default function EditorPanel() {
   };
 
   const handleDeleteStory = async (id: string) => {
+    console.log('🗑️ Tentando apagar notícia:', id);
     const story = stories.find(s => s.id === id);
-    if (!story) return;
+
+    if (!story) {
+      console.log('❌ Notícia não encontrada');
+      return;
+    }
+
+    console.log('📋 Notícia encontrada:', story.title);
 
     const confirmDelete = window.confirm(
       `Tens a certeza que queres apagar "${story.title}"?\n\nEsta ação não pode ser desfeita.`
     );
 
-    if (!confirmDelete) return;
+    if (!confirmDelete) {
+      console.log('❌ Utilizador cancelou');
+      return;
+    }
+
+    console.log('✅ Confirmado, a apagar...');
 
     try {
       await deleteStory(id);
@@ -140,7 +152,7 @@ export default function EditorPanel() {
         setActiveStory(updatedStories.length > 0 ? updatedStories[0] : null);
       }
 
-      console.log('✅ Notícia apagada');
+      console.log('✅ Notícia apagada com sucesso!');
     } catch (err) {
       console.error("❌ Erro ao apagar:", err);
       alert('Erro ao apagar notícia: ' + (err as any).message);
@@ -194,20 +206,17 @@ export default function EditorPanel() {
               </button>
               <div className="space-y-1">
                 {stories.map(s => (
-                  <div key={s.id} className="flex items-center gap-1 group/item">
+                  <div key={s.id} className="flex items-center gap-1 group">
                     <button
                       onClick={() => setActiveStory(s)}
                       className={`flex-1 text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
                     >
-                      <FileText className={`w-4 h-4 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover/item:text-primary transition-colors'}`} />
-                      <span className="truncate flex-1">{s.title}</span>
+                      <FileText className={`w-4 h-4 flex-shrink-0 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover:text-primary transition-colors'}`} />
+                      <span className="truncate flex-1 overflow-hidden">{s.title}</span>
                     </button>
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteStory(s.id);
-                      }}
-                      className="p-3 rounded-xl text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover/item:opacity-100"
+                      onClick={() => handleDeleteStory(s.id)}
+                      className="p-2 rounded-lg text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
                       title="Apagar notícia"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -217,17 +226,6 @@ export default function EditorPanel() {
               </div>
             </div>
 
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-6 px-2">Sistema</div>
-              <div className="space-y-1">
-                <button className="w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-white/40 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
-                  <History className="w-4 h-4 text-white/20" /> Logs de Edição
-                </button>
-                <button className="w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-white/40 hover:bg-white/5 hover:text-white transition-all flex items-center gap-3">
-                  <Settings className="w-4 h-4 text-white/20" /> Configurações
-                </button>
-              </div>
-            </div>
           </nav>
         </div>
         
