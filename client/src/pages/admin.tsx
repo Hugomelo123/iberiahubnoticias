@@ -100,6 +100,7 @@ export default function EditorPanel() {
         type: 'news',
         published: false,
         featured: false,
+        timestamp: new Date().toISOString(),
         author: {
           name: 'Editor',
           role: 'Redação'
