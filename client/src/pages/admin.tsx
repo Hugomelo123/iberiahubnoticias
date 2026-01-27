@@ -89,8 +89,9 @@ export default function EditorPanel() {
   };
 
   const handleCreateStory = async () => {
+    console.log('🔵 Criando nova notícia...');
     try {
-      const newStory = await createStory({
+      const newStoryData = {
         title: 'Nova Notícia',
         slug: 'nova-noticia-' + Date.now(),
         whatHappened: 'Escreve aqui o que aconteceu...',
@@ -103,11 +104,18 @@ export default function EditorPanel() {
           name: 'Editor',
           role: 'Redação'
         }
-      });
+      };
+      console.log('📤 Enviando dados:', newStoryData);
+
+      const newStory = await createStory(newStoryData);
+      console.log('✅ Notícia criada:', newStory);
+
       setStories([newStory, ...stories]);
       setActiveStory(newStory);
+      console.log('✅ Estado atualizado');
     } catch (err) {
-      console.error("Erro ao criar notícia:", err);
+      console.error("❌ Erro ao criar notícia:", err);
+      alert('Erro ao criar notícia: ' + (err as any).message);
     }
   };
 
@@ -223,9 +231,9 @@ export default function EditorPanel() {
                <div className="h-px flex-1 bg-white/5" />
                <span className="text-[10px] font-mono uppercase tracking-widest">Headline & Slug</span>
             </div>
-            <input 
-              type="text" 
-              value={activeStory.title}
+            <input
+              type="text"
+              value={activeStory.title ?? ''}
               onChange={(e) => setActiveStory({...activeStory, title: e.target.value})}
               className="w-full bg-transparent border-none p-0 text-6xl font-serif font-bold text-white focus:ring-0 placeholder:text-white/10"
               placeholder="Título da Narrativa..."
@@ -238,28 +246,28 @@ export default function EditorPanel() {
               <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Responsável</label>
               <div className="relative group">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
-                <input 
-                  type="text" 
-                  value={activeStory.author.name}
-                  onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, name: e.target.value}})}
+                <input
+                  type="text"
+                  value={activeStory.author?.name ?? ''}
+                  onChange={(e) => setActiveStory({...activeStory, author: {...(activeStory.author || {}), name: e.target.value}})}
                   className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
                 />
               </div>
             </div>
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Cargo Editorial</label>
-              <input 
-                type="text" 
-                value={activeStory.author.role}
-                onChange={(e) => setActiveStory({...activeStory, author: {...activeStory.author, role: e.target.value}})}
+              <input
+                type="text"
+                value={activeStory.author?.role ?? ''}
+                onChange={(e) => setActiveStory({...activeStory, author: {...(activeStory.author || {}), role: e.target.value}})}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
               />
             </div>
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Entidade Focal</label>
-              <input 
-                type="text" 
-                value={activeStory.entity}
+              <input
+                type="text"
+                value={activeStory.entity ?? ''}
                 onChange={(e) => setActiveStory({...activeStory, entity: e.target.value})}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
               />
@@ -290,8 +298,8 @@ export default function EditorPanel() {
               <div className="grid lg:grid-cols-2 gap-12">
                 <div className="space-y-4">
                    <label className="text-[10px] font-black uppercase tracking-widest text-primary/60">Bloco 01: O Acontecimento</label>
-                   <textarea 
-                    value={activeStory.content?.block1 || activeStory.whatHappened}
+                   <textarea
+                    value={activeStory.content?.block1 ?? activeStory.whatHappened ?? ''}
                     onChange={(e) => {
                       if (activeStory.content) {
                         setActiveStory({...activeStory, content: {...activeStory.content, block1: e.target.value}});
@@ -304,8 +312,8 @@ export default function EditorPanel() {
                 </div>
                 <div className="space-y-4">
                    <label className="text-[10px] font-black uppercase tracking-widest text-white/30">Bloco 02: A Análise</label>
-                   <textarea 
-                    value={activeStory.content?.block2 || activeStory.whyItMatters}
+                   <textarea
+                    value={activeStory.content?.block2 ?? activeStory.whyItMatters ?? ''}
                     onChange={(e) => {
                       if (activeStory.content) {
                         setActiveStory({...activeStory, content: {...activeStory.content, block2: e.target.value}});
