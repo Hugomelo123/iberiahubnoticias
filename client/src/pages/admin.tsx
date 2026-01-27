@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2, ShieldAlert } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, logout } from '@/lib/api';
+import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, deleteStory, logout } from '@/lib/api';
 
 export default function EditorPanel() {
   const [stories, setStories] = useState<any[]>([]);
@@ -120,6 +120,33 @@ export default function EditorPanel() {
     }
   };
 
+  const handleDeleteStory = async (id: string) => {
+    const story = stories.find(s => s.id === id);
+    if (!story) return;
+
+    const confirmDelete = window.confirm(
+      `Tens a certeza que queres apagar "${story.title}"?\n\nEsta ação não pode ser desfeita.`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteStory(id);
+      const updatedStories = stories.filter(s => s.id !== id);
+      setStories(updatedStories);
+
+      // Se apagámos a notícia ativa, seleciona a primeira disponível
+      if (activeStory.id === id) {
+        setActiveStory(updatedStories.length > 0 ? updatedStories[0] : null);
+      }
+
+      console.log('✅ Notícia apagada');
+    } catch (err) {
+      console.error("❌ Erro ao apagar:", err);
+      alert('Erro ao apagar notícia: ' + (err as any).message);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     setLocation('/login');
@@ -167,14 +194,25 @@ export default function EditorPanel() {
               </button>
               <div className="space-y-1">
                 {stories.map(s => (
-                  <button 
-                    key={s.id}
-                    onClick={() => setActiveStory(s)}
-                    className={`w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 group ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
-                  >
-                    <FileText className={`w-4 h-4 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover:text-primary transition-colors'}`} />
-                    <span className="truncate">{s.title}</span>
-                  </button>
+                  <div key={s.id} className="flex items-center gap-1 group/item">
+                    <button
+                      onClick={() => setActiveStory(s)}
+                      className={`flex-1 text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+                    >
+                      <FileText className={`w-4 h-4 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover/item:text-primary transition-colors'}`} />
+                      <span className="truncate flex-1">{s.title}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteStory(s.id);
+                      }}
+                      className="p-3 rounded-xl text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover/item:opacity-100"
+                      title="Apagar notícia"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
