@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2, ShieldAlert } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, logout } from '@/lib/api';
+import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, logout } from '@/lib/api';
 
 export default function EditorPanel() {
   const [stories, setStories] = useState<any[]>([]);
@@ -88,6 +88,29 @@ export default function EditorPanel() {
     }
   };
 
+  const handleCreateStory = async () => {
+    try {
+      const newStory = await createStory({
+        title: 'Nova Notícia',
+        slug: 'nova-noticia-' + Date.now(),
+        whatHappened: 'Escreve aqui o que aconteceu...',
+        whyItMatters: 'Explica porque é importante...',
+        entity: 'Entidade',
+        type: 'news',
+        published: false,
+        featured: false,
+        author: {
+          name: 'Editor',
+          role: 'Redação'
+        }
+      });
+      setStories([newStory, ...stories]);
+      setActiveStory(newStory);
+    } catch (err) {
+      console.error("Erro ao criar notícia:", err);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     setLocation('/login');
@@ -126,7 +149,13 @@ export default function EditorPanel() {
 
           <nav className="space-y-8">
             <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-6 px-2">Narrativas</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-4 px-2">Narrativas</div>
+              <button
+                onClick={handleCreateStory}
+                className="w-full mb-4 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all flex items-center justify-center gap-2"
+              >
+                <Plus className="w-4 h-4" /> Nova Notícia
+              </button>
               <div className="space-y-1">
                 {stories.map(s => (
                   <button 
