@@ -278,7 +278,12 @@ export default function EditorPanel() {
                 <h2 className="text-white font-serif text-lg italic">{activeStory.title}</h2>
               </div>
               <div className="flex items-center gap-4">
-                <button className="p-3 rounded-xl bg-white/5 text-white/40 hover:text-white border border-white/5 transition-all">
+                <button
+                  onClick={() => window.open(`/noticias/${activeStory.slug}`, '_blank')}
+                  className="p-3 rounded-xl bg-white/5 text-white/40 hover:text-white hover:bg-white/10 border border-white/5 hover:border-primary/30 transition-all"
+                  title="Pré-visualizar notícia"
+                  type="button"
+                >
                   <Eye className="w-5 h-5" />
                 </button>
                 <button
