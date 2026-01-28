@@ -14,6 +14,7 @@ export default function EditorPanel() {
   const [activeTab, setActiveTab] = useState<'editor' | 'settings'>('editor');
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -604,43 +605,171 @@ export default function EditorPanel() {
             </div>
           </>
         ) : (
-          <div className="p-16 max-w-4xl mx-auto">
-            <header className="mb-12">
-              <h1 className="text-4xl font-serif font-bold text-white mb-2">Configurações</h1>
-              <p className="text-white/40">Gestão do painel admin</p>
+          <div className="p-16 max-w-6xl mx-auto">
+            <header className="mb-12 flex items-start justify-between">
+              <div>
+                <h1 className="text-5xl font-serif font-bold text-white mb-3 tracking-tight">Configurações do Sistema</h1>
+                <p className="text-white/40 text-lg">Controlo total do IberiaHub Admin</p>
+              </div>
+              <button
+                onClick={() => setActiveTab('editor')}
+                className="px-6 py-3 bg-white/5 text-white border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-all"
+              >
+                ← Voltar ao Editor
+              </button>
             </header>
 
-            <div className="space-y-8">
-              <section className="bg-white/5 border border-white/10 rounded-2xl p-8">
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  Informação da Sessão
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-white/40">Utilizador:</span>
-                    <span className="text-white font-mono">Editor</span>
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Modo Manutenção */}
+              <section className="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/20 rounded-2xl p-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 blur-3xl -mr-16 -mt-16 group-hover:bg-red-500/20 transition-colors" />
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <ShieldAlert className="w-6 h-6 text-red-500" />
+                      <h3 className="text-xl font-bold text-white">Modo Manutenção</h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setMaintenanceMode(!maintenanceMode);
+                        if (!maintenanceMode) {
+                          alert('⚠️ Site em modo manutenção ativado!\n\nVisitantes verão mensagem de manutenção.');
+                        } else {
+                          alert('✅ Site voltou ao normal!\n\nVisitantes podem aceder normalmente.');
+                        }
+                      }}
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all ${maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}
+                    >
+                      <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${maintenanceMode ? 'translate-x-7' : 'translate-x-1'}`} />
+                    </button>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/40">Notícias totais:</span>
-                    <span className="text-white font-mono">{stories.length}</span>
+                  <p className="text-sm text-white/60 leading-relaxed mb-4">
+                    Ativa o modo manutenção para esconder o site dos visitantes durante atualizações.
+                  </p>
+                  {maintenanceMode && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-red-500/10 border border-red-500/20 rounded-lg p-4"
+                    >
+                      <p className="text-xs text-red-400 font-bold uppercase tracking-widest mb-1">⚠️ Ativo</p>
+                      <p className="text-xs text-white/60">Visitantes veem mensagem de manutenção</p>
+                    </motion.div>
+                  )}
+                </div>
+              </section>
+
+              {/* Estatísticas Gerais */}
+              <section className="bg-white/5 border border-white/10 rounded-2xl p-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-colors" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <LayoutDashboard className="w-6 h-6 text-primary" />
+                    <h3 className="text-xl font-bold text-white">Estatísticas</h3>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/40">Publicadas:</span>
-                    <span className="text-white font-mono">{stories.filter(s => s.published).length}</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Notícias</p>
+                      <p className="text-3xl font-bold text-white">{stories.length}</p>
+                      <p className="text-xs text-primary mt-1">{stories.filter(s => s.published).length} publicadas</p>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Jogos</p>
+                      <p className="text-3xl font-bold text-white">{matches.length}</p>
+                      <p className="text-xs text-red-500 mt-1">{matches.filter(m => m.isLive).length} ao vivo</p>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Destaques</p>
+                      <p className="text-3xl font-bold text-white">{stories.filter(s => s.featured).length}</p>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4">
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Rascunhos</p>
+                      <p className="text-3xl font-bold text-white">{stories.filter(s => !s.published).length}</p>
+                    </div>
                   </div>
                 </div>
               </section>
 
+              {/* Informação do Sistema */}
               <section className="bg-white/5 border border-white/10 rounded-2xl p-8">
-                <h3 className="text-lg font-bold text-white mb-4">Ações Rápidas</h3>
-                <div className="flex gap-4">
+                <div className="flex items-center gap-3 mb-6">
+                  <User className="w-6 h-6 text-primary" />
+                  <h3 className="text-xl font-bold text-white">Sessão Ativa</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center py-3 border-b border-white/5">
+                    <span className="text-sm text-white/40">Utilizador</span>
+                    <span className="text-sm text-white font-mono font-bold">Editor Principal</span>
+                  </div>
+                  <div className="flex justify-between items-center py-3 border-b border-white/5">
+                    <span className="text-sm text-white/40">Nível de acesso</span>
+                    <span className="text-sm text-primary font-bold">Administrator</span>
+                  </div>
+                  <div className="flex justify-between items-center py-3 border-b border-white/5">
+                    <span className="text-sm text-white/40">Sessão iniciada</span>
+                    <span className="text-sm text-white font-mono">{new Date().toLocaleDateString('pt-PT')}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-3">
+                    <span className="text-sm text-white/40">Versão do painel</span>
+                    <span className="text-sm text-white/60 font-mono">v4.0.1</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Ações Rápidas */}
+              <section className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Settings className="w-6 h-6 text-primary" />
+                  <h3 className="text-xl font-bold text-white">Ações Rápidas</h3>
+                </div>
+                <div className="space-y-3">
                   <button
-                    onClick={() => setActiveTab('editor')}
-                    className="px-6 py-3 bg-primary text-black rounded-lg font-bold hover:scale-105 transition-transform"
+                    onClick={handleCreateStory}
+                    className="w-full py-4 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold hover:bg-primary/20 transition-all text-left px-6 flex items-center gap-3"
                   >
-                    Voltar ao Editor
+                    <Plus className="w-5 h-5" />
+                    <span>Criar Nova Notícia</span>
                   </button>
+                  <button
+                    onClick={addNewMatch}
+                    className="w-full py-4 bg-white/5 text-white border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-all text-left px-6 flex items-center gap-3"
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span>Adicionar Jogo à Agenda</span>
+                  </button>
+                  <button
+                    onClick={() => window.open('/noticias', '_blank')}
+                    className="w-full py-4 bg-white/5 text-white border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-all text-left px-6 flex items-center gap-3"
+                  >
+                    <Eye className="w-5 h-5" />
+                    <span>Ver Site Público</span>
+                  </button>
+                </div>
+              </section>
+
+              {/* Informação do Conteúdo */}
+              <section className="lg:col-span-2 bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <FileText className="w-6 h-6 text-primary" />
+                  <h3 className="text-xl font-bold text-white">Breakdown de Conteúdo</h3>
+                </div>
+                <div className="grid md:grid-cols-4 gap-6">
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Match Protocol</p>
+                    <p className="text-4xl font-bold text-primary">{stories.filter(s => s.type === 'match').length}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Reportagens</p>
+                    <p className="text-4xl font-bold text-primary">{stories.filter(s => s.type === 'interview').length}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Notícias</p>
+                    <p className="text-4xl font-bold text-primary">{stories.filter(s => s.type === 'news').length}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest">Transferências</p>
+                    <p className="text-4xl font-bold text-primary">{stories.filter(s => s.type === 'transfer').length}</p>
+                  </div>
                 </div>
               </section>
             </div>
