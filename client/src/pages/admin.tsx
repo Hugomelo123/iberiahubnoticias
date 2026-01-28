@@ -420,65 +420,36 @@ export default function EditorPanel() {
             </div>
 
             <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Imagem da Notícia</label>
-
-              <div className="flex gap-4">
-                <label className="flex-1 cursor-pointer">
-                  <div className="w-full bg-white/5 border border-white/10 hover:border-primary/30 rounded-xl p-6 text-center transition-all group">
-                    <ImageIcon className="w-8 h-8 mx-auto mb-3 text-primary/40 group-hover:text-primary transition-colors" />
-                    <p className="text-xs text-white/40 group-hover:text-white transition-colors">
-                      Clica para fazer upload de imagem
-                    </p>
-                    <p className="text-[10px] text-white/20 mt-1">JPG, PNG, WebP (max 5MB)</p>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        if (file.size > 5 * 1024 * 1024) {
-                          alert('Imagem muito grande! Máximo 5MB');
-                          return;
-                        }
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setActiveStory({...activeStory, image: reader.result as string});
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                </label>
-              </div>
-
-              <div className="relative">
-                <span className="text-[10px] text-white/20 uppercase tracking-widest mb-2 block">Ou usar URL:</span>
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">URL da Imagem</label>
+              <div className="relative group">
+                <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
                 <input
                   type="text"
-                  value={activeStory.image?.startsWith('data:') ? '' : (activeStory.image ?? '')}
+                  value={activeStory.image ?? ''}
                   onChange={(e) => setActiveStory({...activeStory, image: e.target.value})}
                   placeholder="https://exemplo.com/imagem.jpg"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white/60 focus:border-primary/50 transition-all outline-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
                 />
               </div>
-
+              <p className="text-[10px] text-white/20">
+                Recomendado: Imgur, ImgBB, Cloudinary, ou outro host de imagens
+              </p>
               {activeStory.image && (
                 <div className="mt-4 rounded-xl overflow-hidden border border-white/10 relative group">
                   <img
                     src={activeStory.image}
                     alt="Preview"
-                    loading="lazy"
-                    className="w-full h-64 object-cover"
+                    className="w-full h-64 object-cover bg-white/5"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
+                      const img = e.target as HTMLImageElement;
+                      img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="%23ff6b00" width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="20">Erro ao carregar imagem</text></svg>';
                     }}
                   />
                   <button
                     onClick={() => setActiveStory({...activeStory, image: ''})}
-                    className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    className="absolute top-2 right-2 p-2 bg-red-500/90 hover:bg-red-500 text-white rounded-lg transition-all"
                     type="button"
+                    title="Remover imagem"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
