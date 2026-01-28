@@ -185,6 +185,21 @@ export default function EditorPanel() {
       {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.02] z-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-8 right-8 z-[200] bg-primary text-black px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 font-bold"
+          >
+            <CheckCircle2 className="w-5 h-5" />
+            <span>Notícia guardada com sucesso!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Modern Sidebar */}
       <aside className="w-72 border-r border-white/5 bg-[#08080a] flex flex-col relative z-10">
         <div className="p-8">
@@ -204,27 +219,23 @@ export default function EditorPanel() {
               >
                 <Plus className="w-4 h-4" /> Nova Notícia
               </button>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {stories.map(s => (
-                  <div key={s.id} className="flex items-center gap-2">
+                  <div key={s.id} className="flex items-stretch gap-1">
                     <button
                       onClick={() => setActiveStory(s)}
-                      className={`flex-1 text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+                      className={`flex-1 min-w-0 text-left px-3 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeStory.id === s.id ? 'bg-primary text-black shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
                     >
-                      <FileText className={`w-4 h-4 flex-shrink-0 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 transition-colors'}`} />
-                      <span className="truncate flex-1 overflow-hidden text-left">{s.title}</span>
+                      <FileText className={`w-3.5 h-3.5 flex-shrink-0 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40'}`} />
+                      <span className="truncate min-w-0">{s.title}</span>
                     </button>
                     <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleDeleteStory(s.id);
-                      }}
-                      className="p-2 rounded-lg text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all flex-shrink-0 z-10"
-                      title="Apagar notícia"
+                      onClick={() => handleDeleteStory(s.id)}
+                      className="px-2 py-2 rounded-lg text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all flex-shrink-0"
+                      title="Apagar"
                       type="button"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))}
@@ -280,6 +291,36 @@ export default function EditorPanel() {
               className="w-full bg-transparent border-none p-0 text-6xl font-serif font-bold text-white focus:ring-0 placeholder:text-white/10"
               placeholder="Título da Narrativa..."
             />
+            <div className="flex items-center gap-3 pt-4">
+              <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">URL:</span>
+              <input
+                type="text"
+                value={activeStory.slug ?? ''}
+                onChange={(e) => setActiveStory({...activeStory, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-')})}
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white/60 font-mono focus:border-primary/50 transition-all outline-none"
+                placeholder="slug-da-noticia"
+              />
+            </div>
+            <div className="flex gap-4 pt-2">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={activeStory.published ?? false}
+                  onChange={(e) => setActiveStory({...activeStory, published: e.target.checked})}
+                  className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50"
+                />
+                <span className="text-xs text-white/40 group-hover:text-white transition-colors">Publicada</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={activeStory.featured ?? false}
+                  onChange={(e) => setActiveStory({...activeStory, featured: e.target.checked})}
+                  className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary/50"
+                />
+                <span className="text-xs text-white/40 group-hover:text-white transition-colors">Destaque</span>
+              </label>
+            </div>
           </section>
 
           {/* Meta Edit */}
@@ -379,28 +420,68 @@ export default function EditorPanel() {
             </div>
 
             <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">URL da Imagem</label>
-              <div className="relative group">
-                <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">Imagem da Notícia</label>
+
+              <div className="flex gap-4">
+                <label className="flex-1 cursor-pointer">
+                  <div className="w-full bg-white/5 border border-white/10 hover:border-primary/30 rounded-xl p-6 text-center transition-all group">
+                    <ImageIcon className="w-8 h-8 mx-auto mb-3 text-primary/40 group-hover:text-primary transition-colors" />
+                    <p className="text-xs text-white/40 group-hover:text-white transition-colors">
+                      Clica para fazer upload de imagem
+                    </p>
+                    <p className="text-[10px] text-white/20 mt-1">JPG, PNG, WebP (max 5MB)</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('Imagem muito grande! Máximo 5MB');
+                          return;
+                        }
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setActiveStory({...activeStory, image: reader.result as string});
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+
+              <div className="relative">
+                <span className="text-[10px] text-white/20 uppercase tracking-widest mb-2 block">Ou usar URL:</span>
                 <input
                   type="text"
-                  value={activeStory.image ?? ''}
+                  value={activeStory.image?.startsWith('data:') ? '' : (activeStory.image ?? '')}
                   onChange={(e) => setActiveStory({...activeStory, image: e.target.value})}
                   placeholder="https://exemplo.com/imagem.jpg"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white/60 focus:border-primary/50 transition-all outline-none"
                 />
               </div>
+
               {activeStory.image && (
-                <div className="mt-4 rounded-xl overflow-hidden border border-white/10">
+                <div className="mt-4 rounded-xl overflow-hidden border border-white/10 relative group">
                   <img
                     src={activeStory.image}
                     alt="Preview"
                     loading="lazy"
-                    className="w-full h-48 object-cover"
+                    className="w-full h-64 object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
+                  <button
+                    onClick={() => setActiveStory({...activeStory, image: ''})}
+                    className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    type="button"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               )}
             </div>
