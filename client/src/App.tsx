@@ -9,9 +9,11 @@ import Article from "@/pages/article";
 import Admin from "@/pages/admin";
 import Login from "@/pages/login";
 import Agenda from "@/pages/agenda";
+import Maintenance from "@/pages/maintenance";
 import Privacidade from "@/pages/legal/privacidade";
 import Termos from "@/pages/legal/termos";
 import Redacao from "@/pages/legal/redacao";
+import MaintenanceChecker from "@/components/MaintenanceChecker";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
   const isAuth = sessionStorage.getItem('isEditor') === 'true';
@@ -24,20 +26,23 @@ function PrivateRoute({ component: Component, ...rest }: any) {
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/noticias" component={Noticias} />
-      <Route path="/noticias/:slug" component={Article} />
-      <Route path="/agenda" component={Agenda} />
-      <Route path="/login" component={Login} />
-      <Route path="/privacidade" component={Privacidade} />
-      <Route path="/termos" component={Termos} />
-      <Route path="/redacao" component={Redacao} />
-      <PrivateRoute path="/admin" component={Admin} />
-      <Route path="/">
-        <Redirect to="/noticias" />
-      </Route>
-      <Route component={NotFound} />
-    </Switch>
+    <MaintenanceChecker>
+      <Switch>
+        <Route path="/noticias" component={Noticias} />
+        <Route path="/noticias/:slug" component={Article} />
+        <Route path="/agenda" component={Agenda} />
+        <Route path="/login" component={Login} />
+        <Route path="/maintenance" component={Maintenance} />
+        <Route path="/privacidade" component={Privacidade} />
+        <Route path="/termos" component={Termos} />
+        <Route path="/redacao" component={Redacao} />
+        <PrivateRoute path="/admin" component={Admin} />
+        <Route path="/">
+          <Redirect to="/noticias" />
+        </Route>
+        <Route component={NotFound} />
+      </Switch>
+    </MaintenanceChecker>
   );
 }
 

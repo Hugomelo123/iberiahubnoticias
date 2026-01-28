@@ -135,5 +135,20 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     res.json({ success: true });
   });
 
+  // ============ MAINTENANCE MODE (PROTECTED) ============
+  app.get("/api/maintenance", async (req, res) => {
+    const enabled = await storage.getMaintenanceMode();
+    res.json({ enabled });
+  });
+
+  app.post("/api/maintenance", requireAuth, async (req, res) => {
+    const { enabled } = req.body;
+    if (typeof enabled !== "boolean") {
+      return res.status(400).json({ error: "enabled deve ser boolean" });
+    }
+    await storage.setMaintenanceMode(enabled);
+    res.json({ success: true, enabled });
+  });
+
   return httpServer;
 }

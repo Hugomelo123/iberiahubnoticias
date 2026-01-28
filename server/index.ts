@@ -61,7 +61,40 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  await registerRoutes(httpServer, app);
+  const routes = await registerRoutes(httpServer, app);
+
+  // Middleware de manutenção - deve vir ANTES do error handler
+  app.use(async (req, res, next) => {
+    // Importar storage dinamicamente para evitar circular dependency
+    const { storage } = await import("./storage");
+    const maintenanceMode = await storage.getMaintenanceMode();
+
+    // Permitir sempre: admin, API de auth, API de manutenção, assets
+    const allowedPaths = [
+      '/admin',
+      '/api/auth',
+      '/api/maintenance',
+      '/attached_assets',
+      '/logo.png'
+    ];
+
+    const isAllowed = allowedPaths.some(path => req.path.startsWith(path));
+
+    // Se em manutenção e não é uma rota permitida
+    if (maintenanceMode && !isAllowed) {
+      // Para chamadas API, retornar JSON
+      if (req.path.startsWith('/api')) {
+        return res.status(503).json({
+          error: "Site em manutenção",
+          message: "O site está temporariamente indisponível para manutenção. Tente novamente em breve."
+        });
+      }
+      // Para páginas HTML, deixar passar (vamos tratar no front-end)
+      // O front-end vai verificar o estado e mostrar a página de manutenção
+    }
+
+    next();
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

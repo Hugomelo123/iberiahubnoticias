@@ -36,24 +36,28 @@ function formatTimeAgo(date: Date): string {
 export interface IStorage {
   // Auth
   getUserByPassword(password: string): Promise<User | undefined>;
-  
+
   // Stories
   getAllStories(): Promise<Story[]>;
   getStoryBySlug(slug: string): Promise<Story | undefined>;
   createStory(story: InsertStory): Promise<Story>;
   updateStory(id: string, story: Partial<InsertStory>): Promise<Story | undefined>;
   deleteStory(id: string): Promise<boolean>;
-  
+
   // Matches
   getAllMatches(): Promise<Match[]>;
   createMatch(match: InsertMatch): Promise<Match>;
   updateMatch(id: string, match: Partial<InsertMatch>): Promise<Match | undefined>;
   deleteMatch(id: string): Promise<boolean>;
-  
+
   // Briefings
   getAllBriefings(): Promise<Briefing[]>;
   createBriefing(briefing: InsertBriefing): Promise<Briefing>;
   deleteBriefing(id: string): Promise<boolean>;
+
+  // Maintenance
+  getMaintenanceMode(): Promise<boolean>;
+  setMaintenanceMode(enabled: boolean): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -61,6 +65,7 @@ export class MemStorage implements IStorage {
   private stories: Map<string, Story> = new Map();
   private matches: Map<string, Match> = new Map();
   private briefings: Map<string, Briefing> = new Map();
+  private maintenanceMode: boolean = false;
 
   constructor() {
     this.seedData();
@@ -269,6 +274,15 @@ export class MemStorage implements IStorage {
 
   async deleteBriefing(id: string): Promise<boolean> {
     return this.briefings.delete(id);
+  }
+
+  // MAINTENANCE
+  async getMaintenanceMode(): Promise<boolean> {
+    return this.maintenanceMode;
+  }
+
+  async setMaintenanceMode(enabled: boolean): Promise<void> {
+    this.maintenanceMode = enabled;
   }
 }
 

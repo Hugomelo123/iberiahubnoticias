@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2, ShieldAlert } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, deleteStory, logout } from '@/lib/api';
+import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, deleteStory, logout, getMaintenanceMode, setMaintenanceMode as apiSetMaintenanceMode } from '@/lib/api';
 
 export default function EditorPanel() {
   const [stories, setStories] = useState<any[]>([]);
@@ -20,12 +20,14 @@ export default function EditorPanel() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [storiesData, matchesData] = await Promise.all([
+        const [storiesData, matchesData, maintenanceData] = await Promise.all([
           getStories(),
-          getMatches()
+          getMatches(),
+          getMaintenanceMode()
         ]);
         setStories(storiesData);
         setMatches(matchesData);
+        setMaintenanceMode(maintenanceData.enabled);
         if (storiesData.length > 0) {
           setActiveStory(storiesData[0]);
         }
@@ -160,6 +162,23 @@ export default function EditorPanel() {
     } catch (err) {
       console.error("❌ Erro ao apagar:", err);
       alert('Erro ao apagar notícia: ' + (err as any).message);
+    }
+  };
+
+  const toggleMaintenanceMode = async () => {
+    try {
+      const newState = !maintenanceMode;
+      await apiSetMaintenanceMode(newState);
+      setMaintenanceMode(newState);
+
+      if (newState) {
+        alert('⚠️ Site em modo manutenção ativado!\n\nVisitantes verão mensagem de manutenção.');
+      } else {
+        alert('✅ Site voltou ao normal!\n\nVisitantes podem aceder normalmente.');
+      }
+    } catch (err) {
+      console.error("Erro ao alterar modo manutenção:", err);
+      alert('Erro ao alterar modo de manutenção: ' + (err as any).message);
     }
   };
 
@@ -551,12 +570,16 @@ export default function EditorPanel() {
                   <div className="grid md:grid-cols-4 gap-8 relative z-10">
                     <div className="flex flex-col space-y-2">
                       <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Confronto</span>
-                      <input 
+                      <input
                         className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white font-bold tracking-tighter focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
                         value={`${match.teamA} vs ${match.teamB}`}
                         onChange={(e) => {
                           const [a, b] = e.target.value.split(' vs ');
-                          setMatches(matches.map((m: any) => m.id === match.id ? { ...m, teamA: a || m.teamA, teamB: b || m.teamB } : m));
+                          setMatches(matches.map((m: any) => m.id === match.id ? {
+                            ...m,
+                            teamA: a !== undefined ? a : m.teamA,
+                            teamB: b !== undefined ? b : m.teamB
+                          } : m));
                         }}
                       />
                     </div>
@@ -639,14 +662,7 @@ export default function EditorPanel() {
                       <h3 className="text-xl font-bold text-white">Modo Manutenção</h3>
                     </div>
                     <button
-                      onClick={() => {
-                        setMaintenanceMode(!maintenanceMode);
-                        if (!maintenanceMode) {
-                          alert('⚠️ Site em modo manutenção ativado!\n\nVisitantes verão mensagem de manutenção.');
-                        } else {
-                          alert('✅ Site voltou ao normal!\n\nVisitantes podem aceder normalmente.');
-                        }
-                      }}
+                      onClick={toggleMaintenanceMode}
                       className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all ${maintenanceMode ? 'bg-red-500' : 'bg-white/10'}`}
                     >
                       <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${maintenanceMode ? 'translate-x-7' : 'translate-x-1'}`} />

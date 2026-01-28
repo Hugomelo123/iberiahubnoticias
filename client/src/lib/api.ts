@@ -66,3 +66,7 @@ export const deleteMatch = (id: string) => fetchAPI(`/matches/${id}`, { method: 
 export const getBriefings = () => fetchAPI("/briefings");
 export const createBriefing = (data: any) => fetchAPI("/briefings", { method: "POST", body: JSON.stringify(data) });
 export const deleteBriefing = (id: string) => fetchAPI(`/briefings/${id}`, { method: "DELETE" });
+
+// Maintenance Mode
+export const getMaintenanceMode = () => fetchAPI("/maintenance");
+export const setMaintenanceMode = (enabled: boolean) => fetchAPI("/maintenance", { method: "POST", body: JSON.stringify({ enabled }) });
