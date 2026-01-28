@@ -12,6 +12,8 @@ export default function EditorPanel() {
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'editor' | 'settings'>('editor');
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -446,7 +448,11 @@ export default function EditorPanel() {
                 <input
                   type="text"
                   value={activeStory.image ?? ''}
-                  onChange={(e) => setActiveStory({...activeStory, image: e.target.value})}
+                  onChange={(e) => {
+                    setActiveStory({...activeStory, image: e.target.value});
+                    setImageError(false);
+                    setImageLoaded(false);
+                  }}
                   placeholder="https://exemplo.com/imagem.jpg"
                   className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
                 />
@@ -457,42 +463,54 @@ export default function EditorPanel() {
               {activeStory.image && activeStory.image.trim() && (
                 <div className="mt-4">
                   <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Preview:</p>
-                  <div className="rounded-xl overflow-hidden border border-white/10 relative group bg-white/5">
-                    <img
-                      src={activeStory.image}
-                      alt="Preview da imagem"
-                      className="w-full h-64 object-cover"
-                      onLoad={(e) => {
-                        console.log('✅ Imagem carregada:', activeStory.image);
-                        (e.target as HTMLImageElement).style.border = '2px solid #22c55e';
-                      }}
-                      onError={(e) => {
-                        console.log('❌ Erro ao carregar:', activeStory.image);
-                        const img = e.target as HTMLImageElement;
-                        img.style.display = 'none';
-                        const parent = img.parentElement;
-                        if (parent && !parent.querySelector('.error-message')) {
-                          const errorDiv = document.createElement('div');
-                          errorDiv.className = 'error-message flex flex-col items-center justify-center h-64 text-center p-8';
-                          errorDiv.innerHTML = `
-                            <svg class="w-16 h-16 text-red-500/60 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <p class="text-sm text-white/60">Erro ao carregar imagem</p>
-                            <p class="text-xs text-white/30 mt-2">Verifica se o URL está correto</p>
-                          `;
-                          parent.appendChild(errorDiv);
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => setActiveStory({...activeStory, image: ''})}
-                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition-all"
-                      type="button"
-                      title="Remover imagem"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div className="rounded-xl overflow-hidden border border-white/10 relative bg-white/5 min-h-[16rem]">
+                    {!imageError ? (
+                      <>
+                        <img
+                          src={activeStory.image}
+                          alt="Preview da imagem"
+                          className={`w-full h-64 object-cover transition-opacity ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                          onLoad={() => {
+                            console.log('✅ Imagem carregada:', activeStory.image);
+                            setImageLoaded(true);
+                            setImageError(false);
+                          }}
+                          onError={() => {
+                            console.log('❌ Erro ao carregar:', activeStory.image);
+                            setImageError(true);
+                            setImageLoaded(false);
+                          }}
+                        />
+                        {!imageLoaded && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-primary animate-pulse">A carregar imagem...</div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-64 text-center p-8">
+                        <svg className="w-16 h-16 text-red-500/60 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p className="text-sm text-white/60 mb-2">Erro ao carregar imagem</p>
+                        <p className="text-xs text-white/30">Verifica se o URL está correto</p>
+                        <p className="text-xs text-white/20 mt-2 font-mono break-all px-4">{activeStory.image}</p>
+                      </div>
+                    )}
+                    {imageLoaded && (
+                      <button
+                        onClick={() => {
+                          setActiveStory({...activeStory, image: ''});
+                          setImageError(false);
+                          setImageLoaded(false);
+                        }}
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition-all"
+                        type="button"
+                        title="Remover imagem"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
