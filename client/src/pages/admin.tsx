@@ -206,18 +206,23 @@ export default function EditorPanel() {
               </button>
               <div className="space-y-1">
                 {stories.map(s => (
-                  <div key={s.id} className="flex items-center gap-1 group">
+                  <div key={s.id} className="flex items-center gap-2">
                     <button
                       onClick={() => setActiveStory(s)}
                       className={`flex-1 text-left px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-3 ${activeStory.id === s.id ? 'bg-primary text-black shadow-[0_10px_20px_rgba(var(--primary),0.2)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
                     >
-                      <FileText className={`w-4 h-4 flex-shrink-0 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 group-hover:text-primary transition-colors'}`} />
-                      <span className="truncate flex-1 overflow-hidden">{s.title}</span>
+                      <FileText className={`w-4 h-4 flex-shrink-0 ${activeStory.id === s.id ? 'text-black' : 'text-primary/40 transition-colors'}`} />
+                      <span className="truncate flex-1 overflow-hidden text-left">{s.title}</span>
                     </button>
                     <button
-                      onClick={() => handleDeleteStory(s.id)}
-                      className="p-2 rounded-lg text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 flex-shrink-0"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteStory(s.id);
+                      }}
+                      className="p-2 rounded-lg text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all flex-shrink-0 z-10"
                       title="Apagar notícia"
+                      type="button"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -372,7 +377,33 @@ export default function EditorPanel() {
                <div className="h-px flex-1 bg-white/5" />
                <span className="text-[10px] font-mono uppercase tracking-widest">Digital Assets</span>
             </div>
-            {/* ... existing media edit ... */}
+
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/20">URL da Imagem</label>
+              <div className="relative group">
+                <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40 group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  value={activeStory.image ?? ''}
+                  onChange={(e) => setActiveStory({...activeStory, image: e.target.value})}
+                  placeholder="https://exemplo.com/imagem.jpg"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-sm text-white focus:border-primary/50 transition-all outline-none"
+                />
+              </div>
+              {activeStory.image && (
+                <div className="mt-4 rounded-xl overflow-hidden border border-white/10">
+                  <img
+                    src={activeStory.image}
+                    alt="Preview"
+                    loading="lazy"
+                    className="w-full h-48 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </section>
 
           {/* Matches & Agenda Management (New) */}
