@@ -11,6 +11,7 @@ export default function EditorPanel() {
   const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'editor' | 'settings'>('editor');
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -242,9 +243,21 @@ export default function EditorPanel() {
               </div>
             </div>
 
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-4 px-2">Sistema</div>
+              <div className="space-y-1">
+                <button
+                  onClick={() => setActiveTab('settings')}
+                  className={`w-full text-left px-3 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'settings' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+                >
+                  <Settings className="w-3.5 h-3.5" /> Configurações
+                </button>
+              </div>
+            </div>
+
           </nav>
         </div>
-        
+
         <div className="mt-auto p-8 border-t border-white/5">
           <button 
             onClick={handleLogout}
@@ -257,26 +270,28 @@ export default function EditorPanel() {
 
       {/* Main Editing Area */}
       <main className="flex-1 overflow-y-auto relative z-10 bg-gradient-to-b from-transparent to-[#0a0a0c]/50">
-        <header className="h-24 border-b border-white/5 bg-[#08080a]/50 backdrop-blur-3xl sticky top-0 z-20 px-12 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/20 block mb-1">Ficheiro Ativo</span>
-            <h2 className="text-white font-serif text-lg italic">{activeStory.title}</h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="p-3 rounded-xl bg-white/5 text-white/40 hover:text-white border border-white/5 transition-all">
-              <Eye className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={handleSaveStory}
-              disabled={isSaving}
-              className="bg-primary text-black px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(var(--primary),0.2)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
-            >
-              {isSaving ? 'Processando...' : 'Publicar Edição'}
-            </button>
-          </div>
-        </header>
+        {activeTab === 'editor' ? (
+          <>
+            <header className="h-24 border-b border-white/5 bg-[#08080a]/50 backdrop-blur-3xl sticky top-0 z-20 px-12 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/20 block mb-1">Ficheiro Ativo</span>
+                <h2 className="text-white font-serif text-lg italic">{activeStory.title}</h2>
+              </div>
+              <div className="flex items-center gap-4">
+                <button className="p-3 rounded-xl bg-white/5 text-white/40 hover:text-white border border-white/5 transition-all">
+                  <Eye className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleSaveStory}
+                  disabled={isSaving}
+                  className="bg-primary text-black px-8 py-3 rounded-xl text-xs font-black uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(var(--primary),0.2)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+                >
+                  {isSaving ? 'Processando...' : 'Publicar Edição'}
+                </button>
+              </div>
+            </header>
 
-        <div className="p-16 max-w-5xl mx-auto space-y-16 pb-32">
+            <div className="p-16 max-w-5xl mx-auto space-y-16 pb-32">
           {/* Header Edit */}
           <section className="space-y-6">
             <div className="flex items-center gap-4 text-white/20">
@@ -434,25 +449,46 @@ export default function EditorPanel() {
               <p className="text-[10px] text-white/20">
                 Recomendado: Imgur, ImgBB, Cloudinary, ou outro host de imagens
               </p>
-              {activeStory.image && (
-                <div className="mt-4 rounded-xl overflow-hidden border border-white/10 relative group">
-                  <img
-                    src={activeStory.image}
-                    alt="Preview"
-                    className="w-full h-64 object-cover bg-white/5"
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="%23ff6b00" width="400" height="300"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="20">Erro ao carregar imagem</text></svg>';
-                    }}
-                  />
-                  <button
-                    onClick={() => setActiveStory({...activeStory, image: ''})}
-                    className="absolute top-2 right-2 p-2 bg-red-500/90 hover:bg-red-500 text-white rounded-lg transition-all"
-                    type="button"
-                    title="Remover imagem"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+              {activeStory.image && activeStory.image.trim() && (
+                <div className="mt-4">
+                  <p className="text-[10px] text-white/40 uppercase tracking-widest mb-2">Preview:</p>
+                  <div className="rounded-xl overflow-hidden border border-white/10 relative group bg-white/5">
+                    <img
+                      src={activeStory.image}
+                      alt="Preview da imagem"
+                      className="w-full h-64 object-cover"
+                      onLoad={(e) => {
+                        console.log('✅ Imagem carregada:', activeStory.image);
+                        (e.target as HTMLImageElement).style.border = '2px solid #22c55e';
+                      }}
+                      onError={(e) => {
+                        console.log('❌ Erro ao carregar:', activeStory.image);
+                        const img = e.target as HTMLImageElement;
+                        img.style.display = 'none';
+                        const parent = img.parentElement;
+                        if (parent && !parent.querySelector('.error-message')) {
+                          const errorDiv = document.createElement('div');
+                          errorDiv.className = 'error-message flex flex-col items-center justify-center h-64 text-center p-8';
+                          errorDiv.innerHTML = `
+                            <svg class="w-16 h-16 text-red-500/60 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-sm text-white/60">Erro ao carregar imagem</p>
+                            <p class="text-xs text-white/30 mt-2">Verifica se o URL está correto</p>
+                          `;
+                          parent.appendChild(errorDiv);
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => setActiveStory({...activeStory, image: ''})}
+                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition-all"
+                      type="button"
+                      title="Remover imagem"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -542,7 +578,51 @@ export default function EditorPanel() {
             </div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-2xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
           </section>
-        </div>
+            </div>
+          </>
+        ) : (
+          <div className="p-16 max-w-4xl mx-auto">
+            <header className="mb-12">
+              <h1 className="text-4xl font-serif font-bold text-white mb-2">Configurações</h1>
+              <p className="text-white/40">Gestão do painel admin</p>
+            </header>
+
+            <div className="space-y-8">
+              <section className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" />
+                  Informação da Sessão
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Utilizador:</span>
+                    <span className="text-white font-mono">Editor</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Notícias totais:</span>
+                    <span className="text-white font-mono">{stories.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Publicadas:</span>
+                    <span className="text-white font-mono">{stories.filter(s => s.published).length}</span>
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <h3 className="text-lg font-bold text-white mb-4">Ações Rápidas</h3>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setActiveTab('editor')}
+                    className="px-6 py-3 bg-primary text-black rounded-lg font-bold hover:scale-105 transition-transform"
+                  >
+                    Voltar ao Editor
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Modern Success Toast */}
