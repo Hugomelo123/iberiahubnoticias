@@ -37,16 +37,22 @@ export async function login(password: string) {
   });
   sessionStorage.setItem("authToken", data.token);
   sessionStorage.setItem("isEditor", "true");
+  sessionStorage.setItem("username", data.user.username);
   return data;
 }
 
 export function logout() {
   sessionStorage.removeItem("authToken");
   sessionStorage.removeItem("isEditor");
+  sessionStorage.removeItem("username");
 }
 
 export function isAuthenticated(): boolean {
   return !!getToken();
+}
+
+export function getUsername(): string {
+  return sessionStorage.getItem("username") || "Editor";
 }
 
 // Stories
