@@ -53,11 +53,15 @@ export async function initializeDatabase(): Promise<void> {
       console.log("📝 Criando utilizadores editores...");
 
       const editors = [
-        { username: "hugo", password: process.env.EDITOR1_PASSWORD || "hugo2026" },
-        { username: "ricardo", password: process.env.EDITOR2_PASSWORD || "ricardo2026" },
-        { username: "goncalo", password: process.env.EDITOR3_PASSWORD || "goncalo2026" },
-        { username: "miguel", password: process.env.EDITOR4_PASSWORD || "miguel2026" },
-        { username: "admin", password: process.env.ADMIN_PASSWORD || "admin2026" },
+        // Fundadores
+        { username: "hugo", password: process.env.HUGO_PASSWORD || "hugo2026" },
+        { username: "eric", password: process.env.ERIC_PASSWORD || "eric2026" },
+        // Direção Editorial
+        { username: "tiago", password: process.env.TIAGO_PASSWORD || "tiago2026" },
+        { username: "ricardo", password: process.env.RICARDO_PASSWORD || "ricardo2026" },
+        // Marketing & Design
+        { username: "paloma", password: process.env.PALOMA_PASSWORD || "paloma2026" },
+        { username: "guilherme", password: process.env.GUILHERME_PASSWORD || "guilherme2026" },
       ];
 
       for (const editor of editors) {
