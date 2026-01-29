@@ -2,15 +2,37 @@ import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
 import { insertStorySchema, insertMatchSchema, insertBriefingSchema } from "@shared/schema";
+import jwt from "jsonwebtoken";
 
-// Auth token
-const AUTH_TOKEN = "iberia-editor-token-2026";
+// JWT secret - usar variável de ambiente em produção
+const JWT_SECRET = process.env.JWT_SECRET || "iberia-hub-secret-2026-change-in-production";
+
+// Gerar token JWT para utilizador
+function generateToken(userId: string, username: string): string {
+  return jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: "7d" });
+}
+
+// Verificar token JWT
+function verifyToken(token: string): { userId: string; username: string } | null {
+  try {
+    return jwt.verify(token, JWT_SECRET) as { userId: string; username: string };
+  } catch {
+    return null;
+  }
+}
 
 function requireAuth(req: any, res: any, next: any) {
   const token = req.headers.authorization?.replace("Bearer ", "");
-  if (token !== AUTH_TOKEN) {
-    return res.status(401).json({ error: "Não autorizado" });
+  if (!token) {
+    return res.status(401).json({ error: "Token não fornecido" });
   }
+
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    return res.status(401).json({ error: "Token inválido ou expirado" });
+  }
+
+  req.user = decoded;
   next();
 }
 
@@ -19,19 +41,21 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============ AUTH ============
   app.post("/api/auth/login", async (req, res) => {
     const { password } = req.body;
-    
+
     if (!password) {
       return res.status(400).json({ error: "Password obrigatória" });
     }
-    
+
     const user = await storage.getUserByPassword(password);
     if (!user) {
       return res.status(401).json({ error: "Credenciais inválidas" });
     }
-    
-    res.json({ 
-      success: true, 
-      token: AUTH_TOKEN,
+
+    const token = generateToken(user.id, user.username);
+
+    res.json({
+      success: true,
+      token,
       user: { username: user.username }
     });
   });

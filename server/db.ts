@@ -47,15 +47,28 @@ export async function initializeDatabase(): Promise<void> {
     // Verifica se as tabelas existem, se não, faz o push
     console.log("🔄 Inicializando banco de dados...");
 
-    // Seed do usuário editor se não existir
+    // Seed dos utilizadores editores se não existirem
     const existingUsers = await db.select().from(schema.users);
     if (existingUsers.length === 0) {
-      console.log("📝 Criando usuário editor padrão...");
-      await db.insert(schema.users).values({
-        id: crypto.randomUUID(),
-        username: "editor",
-        password: process.env.AUTH_PASSWORD || "iberia2026",
-      });
+      console.log("📝 Criando utilizadores editores...");
+
+      const editors = [
+        { username: "hugo", password: process.env.EDITOR1_PASSWORD || "hugo2026" },
+        { username: "ricardo", password: process.env.EDITOR2_PASSWORD || "ricardo2026" },
+        { username: "goncalo", password: process.env.EDITOR3_PASSWORD || "goncalo2026" },
+        { username: "miguel", password: process.env.EDITOR4_PASSWORD || "miguel2026" },
+        { username: "admin", password: process.env.ADMIN_PASSWORD || "admin2026" },
+      ];
+
+      for (const editor of editors) {
+        await db.insert(schema.users).values({
+          id: crypto.randomUUID(),
+          username: editor.username,
+          password: editor.password,
+        });
+      }
+
+      console.log(`✅ ${editors.length} utilizadores criados`);
     }
 
     // Seed de dados iniciais se não houver stories
