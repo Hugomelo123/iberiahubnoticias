@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Plus, LayoutDashboard, FileText, Image as ImageIcon, CheckCircle2, User, Eye, History, Settings, LogOut, Users, MessageSquare, Trash2, ShieldAlert } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, deleteStory, logout, getMaintenanceMode, setMaintenanceMode as apiSetMaintenanceMode, getUsername } from '@/lib/api';
+import { getStories, getMatches, updateStory, updateMatch, deleteMatch as apiDeleteMatch, createMatch, createStory, deleteStory, logout, getMaintenanceMode, setMaintenanceMode as apiSetMaintenanceMode, getUserProfile } from '@/lib/api';
 
 export default function EditorPanel() {
   const [stories, setStories] = useState<any[]>([]);
@@ -724,11 +724,15 @@ export default function EditorPanel() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-3 border-b border-white/5">
                     <span className="text-sm text-white/40">Utilizador</span>
-                    <span className="text-sm text-white font-mono font-bold capitalize">{getUsername()}</span>
+                    <span className="text-sm text-white font-bold">{getUserProfile().fullName}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-white/5">
-                    <span className="text-sm text-white/40">Nível de acesso</span>
-                    <span className="text-sm text-primary font-bold">Editor</span>
+                    <span className="text-sm text-white/40">Cargo</span>
+                    <span className="text-sm text-primary font-bold">{getUserProfile().role}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-3 border-b border-white/5">
+                    <span className="text-sm text-white/40">Equipa</span>
+                    <span className="text-sm text-white/60">{getUserProfile().team}</span>
                   </div>
                   <div className="flex justify-between items-center py-3 border-b border-white/5">
                     <span className="text-sm text-white/40">Sessão iniciada</span>

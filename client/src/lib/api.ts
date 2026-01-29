@@ -55,6 +55,21 @@ export function getUsername(): string {
   return sessionStorage.getItem("username") || "Editor";
 }
 
+// Informação dos utilizadores da equipa
+const userProfiles: Record<string, { fullName: string; role: string; team: string }> = {
+  hugo: { fullName: "Hugo Melo", role: "Fundador", team: "Fundadores" },
+  eric: { fullName: "Eric", role: "Fundador", team: "Fundadores" },
+  tiago: { fullName: "Tiago", role: "Diretor Editorial", team: "Direção Editorial" },
+  ricardo: { fullName: "Ricardo", role: "Diretor Editorial", team: "Direção Editorial" },
+  paloma: { fullName: "Paloma", role: "Marketing & Design", team: "Marketing & Design" },
+  guilherme: { fullName: "Guilherme", role: "Marketing & Design", team: "Marketing & Design" },
+};
+
+export function getUserProfile(): { fullName: string; role: string; team: string } {
+  const username = getUsername().toLowerCase();
+  return userProfiles[username] || { fullName: username, role: "Editor", team: "Equipa" };
+}
+
 // Stories
 export const getStories = () => fetchAPI("/stories");
 export const getStory = (slug: string) => fetchAPI(`/stories/${slug}`);
