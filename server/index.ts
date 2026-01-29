@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { testConnection, initializeDatabase } from "./db";
+import path from "path";
 
 const app = express();
 const httpServer = createServer(app);
@@ -62,15 +63,20 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Servir ficheiros estáticos da pasta attached_assets
+  const attachedAssetsPath = path.resolve(__dirname, "..", "attached_assets");
+  app.use("/attached_assets", express.static(attachedAssetsPath, {
+    maxAge: "1d", // Cache de 1 dia para imagens
+    etag: true,
+  }));
+
   // Inicializar banco de dados
   const dbConnected = await testConnection();
   if (dbConnected) {
     await initializeDatabase();
   }
 
-  const routes = await registerRoutes(httpServer, app);
-
-  // Middleware de manutenção - deve vir ANTES do error handler
+  // Middleware de manutenção - ANTES das rotas para bloquear API
   app.use(async (req, res, next) => {
     // Importar storage dinamicamente para evitar circular dependency
     const { storage } = await import("./storage");
@@ -85,23 +91,24 @@ app.use((req, res, next) => {
       '/logo.png'
     ];
 
-    const isAllowed = allowedPaths.some(path => req.path.startsWith(path));
+    const isAllowed = allowedPaths.some(p => req.path.startsWith(p));
 
     // Se em manutenção e não é uma rota permitida
     if (maintenanceMode && !isAllowed) {
-      // Para chamadas API, retornar JSON
+      // Para chamadas API, retornar JSON 503
       if (req.path.startsWith('/api')) {
         return res.status(503).json({
           error: "Site em manutenção",
           message: "O site está temporariamente indisponível para manutenção. Tente novamente em breve."
         });
       }
-      // Para páginas HTML, deixar passar (vamos tratar no front-end)
-      // O front-end vai verificar o estado e mostrar a página de manutenção
+      // Para páginas HTML, deixar passar (front-end redireciona)
     }
 
     next();
   });
+
+  const routes = await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
