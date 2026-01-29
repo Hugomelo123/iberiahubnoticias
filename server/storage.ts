@@ -235,18 +235,46 @@ export class DatabaseStorage implements IStorage {
   // MAINTENANCE
   async getMaintenanceMode(): Promise<boolean> {
     if (!db) throw new Error("Database not connected");
-    const result = await db.select().from(settings).where(eq(settings.key, "maintenance_mode"));
-    if (result.length === 0) return false;
-    return result[0].value === "true";
+    try {
+      const result = await db.select().from(settings).where(eq(settings.key, "maintenance_mode"));
+      if (result.length === 0) return false;
+      return result[0].value === "true";
+    } catch (error: any) {
+      // Se a tabela não existir, retorna false (manutenção desligada)
+      if (error.message?.includes("relation") && error.message?.includes("does not exist")) {
+        console.warn("⚠️  Tabela 'settings' não existe - manutenção desligada por defeito");
+        return false;
+      }
+      throw error;
+    }
   }
 
   async setMaintenanceMode(enabled: boolean): Promise<void> {
     if (!db) throw new Error("Database not connected");
-    const existing = await db.select().from(settings).where(eq(settings.key, "maintenance_mode"));
-    if (existing.length === 0) {
-      await db.insert(settings).values({ key: "maintenance_mode", value: enabled.toString() });
-    } else {
-      await db.update(settings).set({ value: enabled.toString() }).where(eq(settings.key, "maintenance_mode"));
+    try {
+      const existing = await db.select().from(settings).where(eq(settings.key, "maintenance_mode"));
+      if (existing.length === 0) {
+        await db.insert(settings).values({ key: "maintenance_mode", value: enabled.toString() });
+      } else {
+        await db.update(settings).set({ value: enabled.toString() }).where(eq(settings.key, "maintenance_mode"));
+      }
+    } catch (error: any) {
+      // Se a tabela não existir, cria-a primeiro
+      if (error.message?.includes("relation") && error.message?.includes("does not exist")) {
+        console.warn("⚠️  Tabela 'settings' não existe - a criar...");
+        // Criar tabela manualmente via raw query
+        const pool = (db as any).$client;
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+          )
+        `);
+        // Inserir valor
+        await db.insert(settings).values({ key: "maintenance_mode", value: enabled.toString() });
+        return;
+      }
+      throw error;
     }
   }
 }

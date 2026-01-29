@@ -42,11 +42,59 @@ export async function testConnection(): Promise<boolean> {
 
 // Função para criar tabelas (seed inicial)
 export async function initializeDatabase(): Promise<void> {
-  if (!db) return;
+  if (!db || !pool) return;
 
   try {
-    // Verifica se as tabelas existem, se não, faz o push
+    // Verifica se as tabelas existem, se não, cria-as
     console.log("🔄 Inicializando banco de dados...");
+
+    // Criar tabelas se não existirem
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS stories (
+        id TEXT PRIMARY KEY,
+        slug TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        what_happened TEXT NOT NULL,
+        why_it_matters TEXT NOT NULL,
+        entity TEXT NOT NULL,
+        time TEXT NOT NULL,
+        timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+        type TEXT NOT NULL,
+        image TEXT,
+        published BOOLEAN NOT NULL DEFAULT TRUE,
+        author JSONB NOT NULL,
+        content JSONB
+      );
+
+      CREATE TABLE IF NOT EXISTS matches (
+        id TEXT PRIMARY KEY,
+        team_a TEXT NOT NULL,
+        team_b TEXT NOT NULL,
+        competition TEXT NOT NULL,
+        time TEXT NOT NULL,
+        is_live BOOLEAN NOT NULL DEFAULT FALSE,
+        caster TEXT,
+        link TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS briefings (
+        id TEXT PRIMARY KEY,
+        text TEXT NOT NULL,
+        time TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+    `);
+    console.log("✅ Tabelas verificadas/criadas");
 
     // Seed dos utilizadores editores se não existirem
     const existingUsers = await db.select().from(schema.users);
