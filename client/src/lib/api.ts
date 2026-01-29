@@ -4,8 +4,36 @@ function getToken(): string | null {
   return sessionStorage.getItem("authToken");
 }
 
+// Decodificar JWT para verificar expiração (sem validar assinatura)
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // exp é em segundos, Date.now() é em milissegundos
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true; // Se não conseguir decodificar, considera expirado
+  }
+}
+
+// Verificar se token é válido (existe e não expirou)
+export function isTokenValid(): boolean {
+  const token = getToken();
+  if (!token) return false;
+  return !isTokenExpired(token);
+}
+
 async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   const token = getToken();
+
+  // Verificar se token expirou antes de fazer request
+  if (token && isTokenExpired(token)) {
+    // Limpar sessão e redirecionar para login
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("isEditor");
+    sessionStorage.removeItem("username");
+    window.location.href = "/login";
+    throw new Error("Sessão expirada. Por favor faz login novamente.");
+  }
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -15,17 +43,26 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
-  
+
   const res = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers,
   });
-  
+
+  // Se receber 401, token inválido/expirado no servidor
+  if (res.status === 401) {
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("isEditor");
+    sessionStorage.removeItem("username");
+    window.location.href = "/login";
+    throw new Error("Sessão inválida. Por favor faz login novamente.");
+  }
+
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: "Erro desconhecido" }));
     throw new Error(error.error || `HTTP ${res.status}`);
   }
-  
+
   return res.json();
 }
 

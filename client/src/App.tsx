@@ -14,9 +14,11 @@ import Privacidade from "@/pages/legal/privacidade";
 import Termos from "@/pages/legal/termos";
 import Redacao from "@/pages/legal/redacao";
 import MaintenanceChecker from "@/components/MaintenanceChecker";
+import { isTokenValid } from "@/lib/api";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
-  const isAuth = sessionStorage.getItem('isEditor') === 'true';
+  // Verificar se o token existe E não está expirado
+  const isAuth = isTokenValid();
   return (
     <Route {...rest}>
       {isAuth ? <Component /> : <Redirect to="/login" />}

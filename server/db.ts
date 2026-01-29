@@ -101,16 +101,25 @@ export async function initializeDatabase(): Promise<void> {
     if (existingUsers.length === 0) {
       console.log("📝 Criando utilizadores editores...");
 
+      // Verificar se as passwords estão definidas nas variáveis de ambiente
+      const requiredPasswords = ['HUGO_PASSWORD', 'ERIC_PASSWORD', 'TIAGO_PASSWORD', 'RICARDO_PASSWORD', 'PALOMA_PASSWORD', 'GUILHERME_PASSWORD'];
+      const missingPasswords = requiredPasswords.filter(p => !process.env[p]);
+
+      if (missingPasswords.length > 0) {
+        console.warn(`⚠️  Variáveis de ambiente em falta: ${missingPasswords.join(', ')}`);
+        console.warn("⚠️  A usar passwords temporárias - MUDE EM PRODUÇÃO!");
+      }
+
       const editors = [
         // Fundadores
-        { username: "hugo", password: process.env.HUGO_PASSWORD || "hugo2026" },
-        { username: "eric", password: process.env.ERIC_PASSWORD || "eric2026" },
+        { username: "hugo", password: process.env.HUGO_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "eric", password: process.env.ERIC_PASSWORD || `temp_${nanoid(12)}` },
         // Direção Editorial
-        { username: "tiago", password: process.env.TIAGO_PASSWORD || "tiago2026" },
-        { username: "ricardo", password: process.env.RICARDO_PASSWORD || "ricardo2026" },
+        { username: "tiago", password: process.env.TIAGO_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "ricardo", password: process.env.RICARDO_PASSWORD || `temp_${nanoid(12)}` },
         // Marketing & Design
-        { username: "paloma", password: process.env.PALOMA_PASSWORD || "paloma2026" },
-        { username: "guilherme", password: process.env.GUILHERME_PASSWORD || "guilherme2026" },
+        { username: "paloma", password: process.env.PALOMA_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "guilherme", password: process.env.GUILHERME_PASSWORD || `temp_${nanoid(12)}` },
       ];
 
       for (const editor of editors) {
@@ -119,6 +128,10 @@ export async function initializeDatabase(): Promise<void> {
           username: editor.username,
           password: editor.password,
         });
+        // Log da password temporária para o admin configurar
+        if (!process.env[`${editor.username.toUpperCase()}_PASSWORD`]) {
+          console.log(`🔑 Password temporária para ${editor.username}: ${editor.password}`);
+        }
       }
 
       console.log(`✅ ${editors.length} utilizadores criados`);

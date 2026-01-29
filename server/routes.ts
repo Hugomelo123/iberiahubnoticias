@@ -3,9 +3,62 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { insertStorySchema, insertMatchSchema, insertBriefingSchema } from "@shared/schema";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
-// JWT secret - usar variável de ambiente em produção
-const JWT_SECRET = process.env.JWT_SECRET || "iberia-hub-secret-2026-change-in-production";
+// JWT secret - OBRIGATÓRIO em produção
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  if (process.env.NODE_ENV === "production") {
+    console.error("❌ ERRO CRÍTICO: JWT_SECRET não definido em produção!");
+    console.error("   Defina a variável de ambiente JWT_SECRET");
+    process.exit(1);
+  }
+  // Em desenvolvimento, gera um segredo temporário
+  const tempSecret = crypto.randomBytes(32).toString("hex");
+  console.warn("⚠️  JWT_SECRET não definido - usando segredo temporário (não usar em produção!)");
+  return tempSecret;
+})();
+
+// Rate limiting simples para login (em memória)
+const loginAttempts = new Map<string, { count: number; resetTime: number }>();
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutos
+
+function checkRateLimit(ip: string): { allowed: boolean; remainingTime?: number } {
+  const now = Date.now();
+  const attempt = loginAttempts.get(ip);
+
+  if (!attempt) {
+    return { allowed: true };
+  }
+
+  // Reset se passou o tempo de lockout
+  if (now > attempt.resetTime) {
+    loginAttempts.delete(ip);
+    return { allowed: true };
+  }
+
+  if (attempt.count >= MAX_LOGIN_ATTEMPTS) {
+    return { allowed: false, remainingTime: Math.ceil((attempt.resetTime - now) / 1000) };
+  }
+
+  return { allowed: true };
+}
+
+function recordLoginAttempt(ip: string, success: boolean): void {
+  if (success) {
+    loginAttempts.delete(ip);
+    return;
+  }
+
+  const now = Date.now();
+  const attempt = loginAttempts.get(ip);
+
+  if (!attempt || now > attempt.resetTime) {
+    loginAttempts.set(ip, { count: 1, resetTime: now + LOCKOUT_TIME });
+  } else {
+    attempt.count++;
+  }
+}
 
 // Gerar token JWT para utilizador
 function generateToken(userId: string, username: string): string {
@@ -40,6 +93,16 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   
   // ============ AUTH ============
   app.post("/api/auth/login", async (req, res) => {
+    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+
+    // Verificar rate limiting
+    const rateCheck = checkRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        error: `Demasiadas tentativas. Tenta novamente em ${rateCheck.remainingTime} segundos.`
+      });
+    }
+
     const { password } = req.body;
 
     if (!password) {
@@ -48,8 +111,12 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
     const user = await storage.getUserByPassword(password);
     if (!user) {
+      recordLoginAttempt(clientIp, false);
       return res.status(401).json({ error: "Credenciais inválidas" });
     }
+
+    // Login bem sucedido - limpar tentativas
+    recordLoginAttempt(clientIp, true);
 
     const token = generateToken(user.id, user.username);
 
@@ -86,11 +153,19 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   app.put("/api/stories/:id", requireAuth, async (req, res) => {
-    const story = await storage.updateStory(req.params.id, req.body);
-    if (!story) {
-      return res.status(404).json({ error: "Story não encontrada" });
+    try {
+      // Validar campos parciais (partial schema)
+      const partialSchema = insertStorySchema.partial();
+      const data = partialSchema.parse(req.body);
+
+      const story = await storage.updateStory(req.params.id, data);
+      if (!story) {
+        return res.status(404).json({ error: "Story não encontrada" });
+      }
+      res.json(story);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
     }
-    res.json(story);
   });
 
   app.delete("/api/stories/:id", requireAuth, async (req, res) => {
@@ -119,11 +194,19 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   app.put("/api/matches/:id", requireAuth, async (req, res) => {
-    const match = await storage.updateMatch(req.params.id, req.body);
-    if (!match) {
-      return res.status(404).json({ error: "Match não encontrado" });
+    try {
+      // Validar campos parciais (partial schema)
+      const partialSchema = insertMatchSchema.partial();
+      const data = partialSchema.parse(req.body);
+
+      const match = await storage.updateMatch(req.params.id, data);
+      if (!match) {
+        return res.status(404).json({ error: "Match não encontrado" });
+      }
+      res.json(match);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
     }
-    res.json(match);
   });
 
   app.delete("/api/matches/:id", requireAuth, async (req, res) => {

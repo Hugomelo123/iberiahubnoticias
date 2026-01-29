@@ -25,6 +25,25 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// Headers de segurança
+app.use((req, res, next) => {
+  // Prevenir clickjacking
+  res.setHeader("X-Frame-Options", "DENY");
+  // Prevenir MIME type sniffing
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  // Ativar filtro XSS do browser
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  // Política de referrer
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  // Content Security Policy básica
+  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'");
+  // HSTS (só em produção com HTTPS)
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+  next();
+});
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -114,8 +133,13 @@ app.use((req, res, next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
+    // Log do erro para debugging
+    console.error(`❌ Erro ${status}:`, message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error(err.stack);
+    }
+
+    res.status(status).json({ error: message });
   });
 
   // importantly only setup vite in development and after
