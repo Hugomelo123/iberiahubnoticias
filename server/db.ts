@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "@shared/schema";
+import { nanoid } from "nanoid";
 
 const { Pool } = pg;
 
@@ -66,7 +67,7 @@ export async function initializeDatabase(): Promise<void> {
 
       for (const editor of editors) {
         await db.insert(schema.users).values({
-          id: crypto.randomUUID(),
+          id: nanoid(),
           username: editor.username,
           password: editor.password,
         });
@@ -96,7 +97,7 @@ async function seedInitialData(): Promise<void> {
   // Stories
   const storiesData = [
     {
-      id: crypto.randomUUID(),
+      id: nanoid(),
       slug: "saw-major-copenhagen-qualificacao",
       title: "SAW faz história e garante vaga no Major",
       whatHappened: "A equipa portuguesa venceu a Fnatic por 2-0 no decisivo do RMR e carimbou a passagem a Copenhaga.",
@@ -115,7 +116,7 @@ async function seedInitialData(): Promise<void> {
       },
     },
     {
-      id: crypto.randomUUID(),
+      id: nanoid(),
       slug: "stadodo-movistar-koi",
       title: "Stadodo é o novo sniper da KOI",
       whatHappened: "O AWPer português junta-se ao projeto ibérico para a nova temporada.",
@@ -134,7 +135,7 @@ async function seedInitialData(): Promise<void> {
       },
     },
     {
-      id: crypto.randomUUID(),
+      id: nanoid(),
       slug: "blast-spring-groups",
       title: "Astralis surpreende na estreia da BLAST",
       whatHappened: "A equipa dinamarquesa bateu a Vitality na abertura do grupo A.",
@@ -152,7 +153,7 @@ async function seedInitialData(): Promise<void> {
       },
     },
     {
-      id: crypto.randomUUID(),
+      id: nanoid(),
       slug: "cs2-update-economy",
       title: "Valve ajusta economia no novo patch",
       whatHappened: "Mudanças no loss bonus e recompensas de kill de caçadeira.",
@@ -177,10 +178,10 @@ async function seedInitialData(): Promise<void> {
 
   // Matches
   const matchesData = [
-    { id: crypto.randomUUID(), teamA: "SAW", teamB: "G2", competition: "PGL Major Copenhaga", time: "20:00", isLive: true, caster: "Zorlak", link: "https://twitch.tv/zorlakoka" },
-    { id: crypto.randomUUID(), teamA: "Movistar KOI", teamB: "Astralis", competition: "RMR Europeu", time: "22:30", isLive: false, caster: "Archarom", link: "https://twitch.tv/rtparena" },
-    { id: crypto.randomUUID(), teamA: "Rhyno", teamB: "FTW", competition: "LPCS Spring", time: "18:00", isLive: false, caster: "Moreira", link: "https://twitch.tv/rtparena" },
-    { id: crypto.randomUUID(), teamA: "Eternal Fire", teamB: "Vitality", competition: "ESL Pro League", time: "15:00", isLive: false, caster: "Shootsgud", link: "https://twitch.tv/esl_csgo" },
+    { id: nanoid(), teamA: "SAW", teamB: "G2", competition: "PGL Major Copenhaga", time: "20:00", isLive: true, caster: "Zorlak", link: "https://twitch.tv/zorlakoka" },
+    { id: nanoid(), teamA: "Movistar KOI", teamB: "Astralis", competition: "RMR Europeu", time: "22:30", isLive: false, caster: "Archarom", link: "https://twitch.tv/rtparena" },
+    { id: nanoid(), teamA: "Rhyno", teamB: "FTW", competition: "LPCS Spring", time: "18:00", isLive: false, caster: "Moreira", link: "https://twitch.tv/rtparena" },
+    { id: nanoid(), teamA: "Eternal Fire", teamB: "Vitality", competition: "ESL Pro League", time: "15:00", isLive: false, caster: "Shootsgud", link: "https://twitch.tv/esl_csgo" },
   ];
 
   for (const match of matchesData) {
@@ -189,10 +190,10 @@ async function seedInitialData(): Promise<void> {
 
   // Briefings
   const briefingsData = [
-    { id: crypto.randomUUID(), text: "SAW anuncia saída de arki após 2 anos de liderança técnica.", time: "10:30" },
-    { id: crypto.randomUUID(), text: "RMR Europeu: Datas confirmadas para Bucareste.", time: "09:15" },
-    { id: crypto.randomUUID(), text: "Movistar KOI fecha lineup com contratação de stadodo.", time: "08:00" },
-    { id: crypto.randomUUID(), text: "Valve lança update corretivo para maps de rotação.", time: "Ontem" },
+    { id: nanoid(), text: "SAW anuncia saída de arki após 2 anos de liderança técnica.", time: "10:30" },
+    { id: nanoid(), text: "RMR Europeu: Datas confirmadas para Bucareste.", time: "09:15" },
+    { id: nanoid(), text: "Movistar KOI fecha lineup com contratação de stadodo.", time: "08:00" },
+    { id: nanoid(), text: "Valve lança update corretivo para maps de rotação.", time: "Ontem" },
   ];
 
   for (const briefing of briefingsData) {
