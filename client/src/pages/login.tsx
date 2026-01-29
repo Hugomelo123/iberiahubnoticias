@@ -39,7 +39,7 @@ export default function LoginPage() {
           <div className="relative">
             <input 
               type="password"
-              placeholder="Chave de acesso"
+              placeholder="Password pessoal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={`w-full bg-white/5 border ${error ? 'border-red-500' : 'border-white/10'} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary/50 transition-all text-center tracking-widest`}
@@ -51,7 +51,7 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute -bottom-6 left-0 right-0 text-red-500 text-[10px] uppercase font-bold tracking-widest flex items-center justify-center gap-1"
               >
-                <ShieldAlert className="w-3 h-3" /> Chave incorreta
+                <ShieldAlert className="w-3 h-3" /> Password incorreta
               </motion.div>
             )}
           </div>
