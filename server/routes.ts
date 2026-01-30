@@ -6,15 +6,16 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
 // JWT secret - OBRIGATÓRIO em produção
-const JWT_SECRET = process.env.JWT_SECRET || (() => {
+// Usando JWT_KEY em vez de JWT_SECRET para evitar que Railway trate como build secret
+const JWT_SECRET = process.env.JWT_KEY || (() => {
   if (process.env.NODE_ENV === "production") {
-    console.error("❌ ERRO CRÍTICO: JWT_SECRET não definido em produção!");
-    console.error("   Defina a variável de ambiente JWT_SECRET");
+    console.error("❌ ERRO CRÍTICO: JWT_KEY não definido em produção!");
+    console.error("   Defina a variável de ambiente JWT_KEY");
     process.exit(1);
   }
   // Em desenvolvimento, gera um segredo temporário
   const tempSecret = crypto.randomBytes(32).toString("hex");
-  console.warn("⚠️  JWT_SECRET não definido - usando segredo temporário (não usar em produção!)");
+  console.warn("⚠️  JWT_KEY não definido - usando segredo temporário (não usar em produção!)");
   return tempSecret;
 })();
 

@@ -102,7 +102,8 @@ export async function initializeDatabase(): Promise<void> {
       console.log("📝 Criando utilizadores editores...");
 
       // Verificar se as passwords estão definidas nas variáveis de ambiente
-      const requiredPasswords = ['HUGO_PASSWORD', 'ERIC_PASSWORD', 'TIAGO_PASSWORD', 'RICARDO_PASSWORD', 'PALOMA_PASSWORD', 'GUILHERME_PASSWORD'];
+      // Usando PASS_ prefix para evitar que Railway trate como build secrets
+      const requiredPasswords = ['PASS_HUGO', 'PASS_ERIC', 'PASS_TIAGO', 'PASS_RICARDO', 'PASS_PALOMA', 'PASS_GUILHERME'];
       const missingPasswords = requiredPasswords.filter(p => !process.env[p]);
 
       if (missingPasswords.length > 0) {
@@ -112,14 +113,14 @@ export async function initializeDatabase(): Promise<void> {
 
       const editors = [
         // Fundadores
-        { username: "hugo", password: process.env.HUGO_PASSWORD || `temp_${nanoid(12)}` },
-        { username: "eric", password: process.env.ERIC_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "hugo", password: process.env.PASS_HUGO || `temp_${nanoid(12)}` },
+        { username: "eric", password: process.env.PASS_ERIC || `temp_${nanoid(12)}` },
         // Direção Editorial
-        { username: "tiago", password: process.env.TIAGO_PASSWORD || `temp_${nanoid(12)}` },
-        { username: "ricardo", password: process.env.RICARDO_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "tiago", password: process.env.PASS_TIAGO || `temp_${nanoid(12)}` },
+        { username: "ricardo", password: process.env.PASS_RICARDO || `temp_${nanoid(12)}` },
         // Marketing & Design
-        { username: "paloma", password: process.env.PALOMA_PASSWORD || `temp_${nanoid(12)}` },
-        { username: "guilherme", password: process.env.GUILHERME_PASSWORD || `temp_${nanoid(12)}` },
+        { username: "paloma", password: process.env.PASS_PALOMA || `temp_${nanoid(12)}` },
+        { username: "guilherme", password: process.env.PASS_GUILHERME || `temp_${nanoid(12)}` },
       ];
 
       for (const editor of editors) {
@@ -129,7 +130,7 @@ export async function initializeDatabase(): Promise<void> {
           password: editor.password,
         });
         // Log da password temporária para o admin configurar
-        if (!process.env[`${editor.username.toUpperCase()}_PASSWORD`]) {
+        if (!process.env[`PASS_${editor.username.toUpperCase()}`]) {
           console.log(`🔑 Password temporária para ${editor.username}: ${editor.password}`);
         }
       }
