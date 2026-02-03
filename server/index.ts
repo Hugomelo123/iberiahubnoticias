@@ -35,8 +35,8 @@ app.use((req, res, next) => {
   res.setHeader("X-XSS-Protection", "1; mode=block");
   // Política de referrer
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  // Content Security Policy básica
-  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'");
+  // Content Security Policy básica (permite grainy-gradients para background)
+  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://grainy-gradients.vercel.app; style-src-elem 'self' 'unsafe-inline' https://grainy-gradients.vercel.app; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'");
   // HSTS (só em produção com HTTPS)
   if (process.env.NODE_ENV === "production") {
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
