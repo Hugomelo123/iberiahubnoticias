@@ -96,32 +96,24 @@ export async function initializeDatabase(): Promise<void> {
     `);
     console.log("✅ Tabelas verificadas/criadas");
 
-    // Seed dos utilizadores editores se não existirem
+    // Seed dos utilizadores editores - criar ou atualizar
     const existingUsers = await db.select().from(schema.users);
+
+    const editors = [
+      // Fundadores
+      { username: "hugo", password: process.env.PASS_HUGO || `temp_${nanoid(12)}` },
+      { username: "eric", password: process.env.PASS_ERIC || `temp_${nanoid(12)}` },
+      // Direção Editorial
+      { username: "tiago", password: process.env.PASS_TIAGO || `temp_${nanoid(12)}` },
+      { username: "ricardo", password: process.env.PASS_RICARDO || `temp_${nanoid(12)}` },
+      // Marketing & Design
+      { username: "paloma", password: process.env.PASS_PALOMA || `temp_${nanoid(12)}` },
+      { username: "guilherme", password: process.env.PASS_GUILHERME || `temp_${nanoid(12)}` },
+    ];
+
     if (existingUsers.length === 0) {
+      // Criar novos utilizadores
       console.log("📝 Criando utilizadores editores...");
-
-      // Verificar se as passwords estão definidas nas variáveis de ambiente
-      // Usando PASS_ prefix para evitar que Railway trate como build secrets
-      const requiredPasswords = ['PASS_HUGO', 'PASS_ERIC', 'PASS_TIAGO', 'PASS_RICARDO', 'PASS_PALOMA', 'PASS_GUILHERME'];
-      const missingPasswords = requiredPasswords.filter(p => !process.env[p]);
-
-      if (missingPasswords.length > 0) {
-        console.warn(`⚠️  Variáveis de ambiente em falta: ${missingPasswords.join(', ')}`);
-        console.warn("⚠️  A usar passwords temporárias - MUDE EM PRODUÇÃO!");
-      }
-
-      const editors = [
-        // Fundadores
-        { username: "hugo", password: process.env.PASS_HUGO || `temp_${nanoid(12)}` },
-        { username: "eric", password: process.env.PASS_ERIC || `temp_${nanoid(12)}` },
-        // Direção Editorial
-        { username: "tiago", password: process.env.PASS_TIAGO || `temp_${nanoid(12)}` },
-        { username: "ricardo", password: process.env.PASS_RICARDO || `temp_${nanoid(12)}` },
-        // Marketing & Design
-        { username: "paloma", password: process.env.PASS_PALOMA || `temp_${nanoid(12)}` },
-        { username: "guilherme", password: process.env.PASS_GUILHERME || `temp_${nanoid(12)}` },
-      ];
 
       for (const editor of editors) {
         await db.insert(schema.users).values({
@@ -129,13 +121,23 @@ export async function initializeDatabase(): Promise<void> {
           username: editor.username,
           password: editor.password,
         });
-        // Log da password temporária para o admin configurar
-        if (!process.env[`PASS_${editor.username.toUpperCase()}`]) {
-          console.log(`🔑 Password temporária para ${editor.username}: ${editor.password}`);
-        }
       }
 
       console.log(`✅ ${editors.length} utilizadores criados`);
+    } else {
+      // Atualizar passwords dos utilizadores existentes
+      console.log("🔄 Atualizando passwords dos utilizadores...");
+
+      for (const editor of editors) {
+        const envVar = `PASS_${editor.username.toUpperCase()}`;
+        if (process.env[envVar]) {
+          await pool.query(
+            `UPDATE users SET password = $1 WHERE username = $2`,
+            [editor.password, editor.username]
+          );
+          console.log(`✅ Password atualizada para ${editor.username}`);
+        }
+      }
     }
 
     // Seed de dados iniciais se não houver stories
