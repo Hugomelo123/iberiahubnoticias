@@ -104,7 +104,7 @@ export default function Article() {
             viewport={{ once: true }}
             className="mb-20 rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.5)] relative group"
           >
-            <img src={story.image} alt={story.title} className="w-full h-auto grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000" />
+            <img src={story.image} alt={story.title} className="w-full max-h-[500px] object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </motion.div>
         )}
