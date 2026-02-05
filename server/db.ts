@@ -94,6 +94,36 @@ export async function initializeDatabase(): Promise<void> {
         value TEXT NOT NULL
       );
     `);
+
+    // Corrigir colunas que possam ter sido criadas como varchar(21) pelo Drizzle
+    // ALTER TYPE é idempotente se já for TEXT
+    await pool.query(`
+      ALTER TABLE stories ALTER COLUMN id TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN slug TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN title TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN what_happened TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN why_it_matters TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN entity TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN time TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN type TYPE TEXT;
+      ALTER TABLE stories ALTER COLUMN image TYPE TEXT;
+
+      ALTER TABLE matches ALTER COLUMN id TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN team_a TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN team_b TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN competition TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN time TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN caster TYPE TEXT;
+      ALTER TABLE matches ALTER COLUMN link TYPE TEXT;
+
+      ALTER TABLE briefings ALTER COLUMN id TYPE TEXT;
+      ALTER TABLE briefings ALTER COLUMN text TYPE TEXT;
+      ALTER TABLE briefings ALTER COLUMN time TYPE TEXT;
+
+      ALTER TABLE users ALTER COLUMN id TYPE TEXT;
+      ALTER TABLE users ALTER COLUMN username TYPE TEXT;
+      ALTER TABLE users ALTER COLUMN password TYPE TEXT;
+    `);
     console.log("✅ Tabelas verificadas/criadas");
 
     // Seed dos utilizadores editores - criar ou atualizar
