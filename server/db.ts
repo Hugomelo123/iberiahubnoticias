@@ -131,13 +131,23 @@ export async function initializeDatabase(): Promise<void> {
       for (const editor of editors) {
         const envVar = `PASS_${editor.username.toUpperCase()}`;
         if (process.env[envVar]) {
-          await pool.query(
-            `UPDATE users SET password = $1 WHERE username = $2`,
+          const result = await pool.query(
+            `UPDATE users SET password = $1 WHERE username = $2 RETURNING username`,
             [editor.password, editor.username]
           );
-          console.log(`✅ Password atualizada para ${editor.username}`);
+          if (result.rowCount && result.rowCount > 0) {
+            console.log(`✅ Password atualizada para ${editor.username} (${editor.password.length} chars)`);
+          } else {
+            console.log(`⚠️  Utilizador ${editor.username} não encontrado na BD para atualizar`);
+          }
+        } else {
+          console.log(`⚠️  Variável ${envVar} não definida`);
         }
       }
+
+      // Debug: listar utilizadores na BD
+      const allUsers = await pool.query(`SELECT username, LENGTH(password) as pwd_len FROM users`);
+      console.log("📋 Utilizadores na BD:", allUsers.rows.map(u => `${u.username}(${u.pwd_len}chars)`).join(", "));
     }
 
     // Seed de dados iniciais se não houver stories

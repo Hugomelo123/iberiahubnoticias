@@ -110,11 +110,14 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       return res.status(400).json({ error: "Password obrigatória" });
     }
 
+    console.log(`🔐 Login attempt: password length=${password.length}, first3="${password.substring(0, 3)}..."`);
     const user = await storage.getUserByPassword(password);
     if (!user) {
+      console.log(`❌ Login falhou: nenhum utilizador encontrado com password de ${password.length} chars`);
       recordLoginAttempt(clientIp, false);
       return res.status(401).json({ error: "Credenciais inválidas" });
     }
+    console.log(`✅ Login bem sucedido: ${user.username}`);
 
     // Login bem sucedido - limpar tentativas
     recordLoginAttempt(clientIp, true);
