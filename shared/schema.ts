@@ -70,6 +70,7 @@ export const storyTypeEnum = z.enum(['match', 'transfer', 'news', 'interview']);
 
 export const storySchema = createSelectSchema(stories, {
   type: storyTypeEnum,
+  timestamp: z.coerce.date(),
   author: z.object({
     name: z.string(),
     role: z.string(),
@@ -86,6 +87,7 @@ export const storySchema = createSelectSchema(stories, {
 });
 export const insertStorySchema = createInsertSchema(stories, {
   type: storyTypeEnum,
+  timestamp: z.coerce.date().optional(),
   author: z.object({
     name: z.string(),
     role: z.string(),
